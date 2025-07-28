@@ -21,8 +21,8 @@ const products: Product[] = [
   {
     id: "1",
     name: "Premium Black Pepper",
-    description: "High-quality black pepper from India",
-    price: 12.99,
+    description: "High-quality black pepper from Rwanda",
+    price: 15000,
     image: "/1.png",
     rating: 4.8,
     reviews: 124,
@@ -31,8 +31,8 @@ const products: Product[] = [
   {
     id: "2",
     name: "Organic Cinnamon",
-    description: "Pure organic cinnamon from Sri Lanka",
-    price: 15.99,
+    description: "Pure organic cinnamon from Rwanda's highlands",
+    price: 18000,
     image: "/2.png",
     rating: 4.9,
     reviews: 89,
@@ -41,8 +41,8 @@ const products: Product[] = [
   {
     id: "3",
     name: "Gourmet Nutmeg",
-    description: "Premium nutmeg from Indonesia",
-    price: 18.99,
+    description: "Premium nutmeg from Rwanda's fertile valleys",
+    price: 22000,
     image: "/3.png",
     rating: 4.7,
     reviews: 67,
@@ -51,8 +51,8 @@ const products: Product[] = [
   {
     id: "4",
     name: "Cardamom Supreme",
-    description: "Elite cardamom from Guatemala",
-    price: 22.99,
+    description: "Elite cardamom from Rwanda's volcanic soil",
+    price: 28000,
     image: "/4.png",
     rating: 4.9,
     reviews: 156,
@@ -61,8 +61,8 @@ const products: Product[] = [
   {
     id: "5",
     name: "Saffron Gold",
-    description: "Premium saffron from Spain",
-    price: 45.99,
+    description: "Premium saffron from Rwanda's high-altitude farms",
+    price: 55000,
     image: "/5.png",
     rating: 5.0,
     reviews: 203,
@@ -208,6 +208,28 @@ export default function ClientPortal() {
             </motion.div>
             
             <motion.div 
+              className="flex items-center space-x-4"
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+            >
+              <motion.div 
+                className="w-16 h-16 bg-green-600 rounded-full flex items-center justify-center"
+                whileHover={{ scale: 1.1 }}
+                transition={{ duration: 0.2 }}
+              >
+                <Image
+                  src="/logo.png"
+                  alt="Emmy Spices Logo"
+                  width={56}
+                  height={56}
+                  className="rounded-full"
+                />
+              </motion.div>
+              <h1 className="text-3xl font-bold text-gray-900">Emmy Spices</h1>
+            </motion.div>
+            
+            <motion.div 
               initial={{ opacity: 0, x: 30 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, delay: 0.3 }}
@@ -258,7 +280,7 @@ export default function ClientPortal() {
             transition={{ duration: 0.6, delay: 0.5 }}
             className="text-3xl font-bold text-gray-900 mb-4"
           >
-            Premium Spices
+            Emmy Premium Spices
           </motion.h2>
           <motion.p 
             initial={{ opacity: 0, y: 20 }}
@@ -266,7 +288,7 @@ export default function ClientPortal() {
             transition={{ duration: 0.6, delay: 0.6 }}
             className="text-gray-600"
           >
-            Discover our collection of premium spices from around the world. 
+            Discover our collection of premium spices from Emmy Spices. 
             Minimum order: 3 items for a complete experience.
           </motion.p>
         </motion.div>
@@ -360,13 +382,13 @@ export default function ClientPortal() {
               </div>
               
               <div className="flex items-center justify-between mb-4">
-                <motion.span 
-                  className="text-2xl font-bold text-green-600"
-                  whileHover={{ scale: 1.1 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  ${product.price}
-                </motion.span>
+                                  <motion.span 
+                    className="text-2xl font-bold text-green-600"
+                    whileHover={{ scale: 1.1 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    {product.price.toLocaleString()} RWF
+                  </motion.span>
                 <span className={`text-sm px-2 py-1 rounded-full ${
                   product.inStock 
                     ? "bg-green-100 text-green-700" 
@@ -475,7 +497,7 @@ export default function ClientPortal() {
                             </motion.div>
                             <div className="flex-1">
                               <h4 className="font-semibold text-gray-900">{product.name}</h4>
-                              <p className="text-sm text-gray-500">${product.price}</p>
+                              <p className="text-sm text-gray-500">{product.price.toLocaleString()} RWF</p>
                             </div>
                             <div className="flex items-center space-x-2">
                               <motion.button
@@ -528,7 +550,7 @@ export default function ClientPortal() {
                   >
                     <div className="flex items-center justify-between mb-4">
                       <span className="text-lg font-semibold text-gray-900">Total:</span>
-                      <span className="text-2xl font-bold text-green-600">${getTotalPrice().toFixed(2)}</span>
+                      <span className="text-2xl font-bold text-green-600">{getTotalPrice().toLocaleString()} RWF</span>
                     </div>
                     
                     <AnimatePresence>

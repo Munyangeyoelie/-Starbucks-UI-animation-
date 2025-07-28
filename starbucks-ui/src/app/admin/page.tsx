@@ -52,10 +52,10 @@ const mockOrders: Order[] = [
     customerName: "John Smith",
     customerEmail: "john@example.com",
     products: [
-      { name: "Premium Black Pepper", quantity: 2, price: 12.99 },
-      { name: "Organic Cinnamon", quantity: 1, price: 15.99 }
+      { name: "Premium Black Pepper", quantity: 2, price: 15000 },
+      { name: "Organic Cinnamon", quantity: 1, price: 18000 }
     ],
-    totalAmount: 41.97,
+    totalAmount: 48000,
     status: "pending",
     orderDate: "2024-01-15",
     shippingAddress: "123 Main St, City, Country"
@@ -65,10 +65,10 @@ const mockOrders: Order[] = [
     customerName: "Sarah Johnson",
     customerEmail: "sarah@example.com",
     products: [
-      { name: "Gourmet Nutmeg", quantity: 3, price: 18.99 },
-      { name: "Cardamom Supreme", quantity: 1, price: 22.99 }
+      { name: "Gourmet Nutmeg", quantity: 3, price: 22000 },
+      { name: "Cardamom Supreme", quantity: 1, price: 28000 }
     ],
-    totalAmount: 79.96,
+    totalAmount: 94000,
     status: "processing",
     orderDate: "2024-01-14",
     shippingAddress: "456 Oak Ave, Town, Country"
@@ -78,9 +78,9 @@ const mockOrders: Order[] = [
     customerName: "Mike Wilson",
     customerEmail: "mike@example.com",
     products: [
-      { name: "Saffron Gold", quantity: 1, price: 45.99 }
+      { name: "Saffron Gold", quantity: 1, price: 55000 }
     ],
-    totalAmount: 45.99,
+    totalAmount: 55000,
     status: "shipped",
     orderDate: "2024-01-13",
     shippingAddress: "789 Pine Rd, Village, Country"
@@ -90,11 +90,11 @@ const mockOrders: Order[] = [
     customerName: "Emily Davis",
     customerEmail: "emily@example.com",
     products: [
-      { name: "Premium Black Pepper", quantity: 5, price: 12.99 },
-      { name: "Organic Cinnamon", quantity: 3, price: 15.99 },
-      { name: "Gourmet Nutmeg", quantity: 2, price: 18.99 }
+      { name: "Premium Black Pepper", quantity: 5, price: 15000 },
+      { name: "Organic Cinnamon", quantity: 3, price: 18000 },
+      { name: "Gourmet Nutmeg", quantity: 2, price: 22000 }
     ],
-    totalAmount: 116.88,
+    totalAmount: 141000,
     status: "delivered",
     orderDate: "2024-01-12",
     shippingAddress: "321 Elm St, City, Country"
@@ -105,8 +105,8 @@ const mockProducts: Product[] = [
   {
     id: "1",
     name: "Premium Black Pepper",
-    description: "High-quality black pepper from India",
-    price: 12.99,
+    description: "High-quality black pepper from Rwanda",
+    price: 15000,
     image: "/1.png",
     stock: 150,
     category: "Pepper",
@@ -115,8 +115,8 @@ const mockProducts: Product[] = [
   {
     id: "2",
     name: "Organic Cinnamon",
-    description: "Pure organic cinnamon from Sri Lanka",
-    price: 15.99,
+    description: "Pure organic cinnamon from Rwanda's highlands",
+    price: 18000,
     image: "/2.png",
     stock: 89,
     category: "Cinnamon",
@@ -125,8 +125,8 @@ const mockProducts: Product[] = [
   {
     id: "3",
     name: "Gourmet Nutmeg",
-    description: "Premium nutmeg from Indonesia",
-    price: 18.99,
+    description: "Premium nutmeg from Rwanda's fertile valleys",
+    price: 22000,
     image: "/3.png",
     stock: 67,
     category: "Nutmeg",
@@ -135,8 +135,8 @@ const mockProducts: Product[] = [
   {
     id: "4",
     name: "Cardamom Supreme",
-    description: "Elite cardamom from Guatemala",
-    price: 22.99,
+    description: "Elite cardamom from Rwanda's volcanic soil",
+    price: 28000,
     image: "/4.png",
     stock: 45,
     category: "Cardamom",
@@ -145,8 +145,8 @@ const mockProducts: Product[] = [
   {
     id: "5",
     name: "Saffron Gold",
-    description: "Premium saffron from Spain",
-    price: 45.99,
+    description: "Premium saffron from Rwanda's high-altitude farms",
+    price: 55000,
     image: "/5.png",
     stock: 23,
     category: "Saffron",
@@ -263,6 +263,22 @@ export default function AdminDashboard() {
               transition={{ duration: 0.6, delay: 0.3 }}
               className="flex items-center space-x-6"
             >
+              <div className="flex items-center space-x-3">
+                <motion.div 
+                  className="w-16 h-16 bg-purple-600 rounded-full flex items-center justify-center"
+                  whileHover={{ scale: 1.1 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <Image
+                    src="/logo.png"
+                    alt="Emmy Spices Logo"
+                    width={56}
+                    height={56}
+                    className="rounded-full"
+                  />
+                </motion.div>
+                <h1 className="text-3xl font-bold text-gray-900">Emmy Spices</h1>
+              </div>
               <div className="flex items-center space-x-2">
                 <motion.div
                   whileHover={{ rotate: 5, scale: 1.1 }}
@@ -324,7 +340,7 @@ export default function AdminDashboard() {
                 animate="visible"
               >
                 {[
-                  { label: "Total Revenue", value: `$${totalRevenue.toFixed(2)}`, icon: TrendingUp, color: "green" },
+                  { label: "Total Revenue", value: `${totalRevenue.toLocaleString()} RWF`, icon: TrendingUp, color: "green" },
                   { label: "Total Orders", value: totalOrders.toString(), icon: ShoppingCart, color: "blue" },
                   { label: "Pending Orders", value: pendingOrders.toString(), icon: Clock, color: "yellow" },
                   { label: "Avg Rating", value: averageRating.toFixed(1), icon: Star, color: "purple" }
@@ -488,7 +504,7 @@ export default function AdminDashboard() {
                           </div>
                         </div>
                         <div className="text-right">
-                          <p className="font-semibold text-gray-900">${order.totalAmount.toFixed(2)}</p>
+                          <p className="font-semibold text-gray-900">{order.totalAmount.toLocaleString()} RWF</p>
                           <p className="text-sm text-gray-500">{order.orderDate}</p>
                         </div>
                       </div>
@@ -503,7 +519,7 @@ export default function AdminDashboard() {
                             className="flex justify-between text-sm"
                           >
                             <span className="text-gray-600">{product.name} × {product.quantity}</span>
-                            <span className="text-gray-900">${(product.price * product.quantity).toFixed(2)}</span>
+                            <span className="text-gray-900">{(product.price * product.quantity).toLocaleString()} RWF</span>
                           </motion.div>
                         ))}
                       </div>
@@ -604,13 +620,13 @@ export default function AdminDashboard() {
                     <p className="text-gray-600 text-sm mb-4">{product.description}</p>
                     
                     <div className="flex items-center justify-between mb-4">
-                      <motion.span 
-                        className="text-xl font-bold text-purple-600"
-                        whileHover={{ scale: 1.1 }}
-                        transition={{ duration: 0.2 }}
-                      >
-                        ${product.price}
-                      </motion.span>
+                                             <motion.span 
+                         className="text-xl font-bold text-purple-600"
+                         whileHover={{ scale: 1.1 }}
+                         transition={{ duration: 0.2 }}
+                       >
+                         {product.price.toLocaleString()} RWF
+                       </motion.span>
                       <div className="flex items-center space-x-1">
                         {[...Array(5)].map((_, i) => (
                           <Star

@@ -20,8 +20,8 @@ const products: Product[] = [
   {
     id: "1",
     name: "Premium Black Pepper",
-    description: "High-quality black pepper sourced from the finest farms in India. Perfect for enhancing any dish with its rich, aromatic flavor.",
-    price: 12.99,
+    description: "High-quality black pepper sourced from the finest farms in Rwanda. Perfect for enhancing any dish with its rich, aromatic flavor.",
+    price: 15000,
     image: "/1.png",
     bgColor: "from-amber-50 to-orange-100",
     textColor: "text-amber-800"
@@ -29,8 +29,8 @@ const products: Product[] = [
   {
     id: "2",
     name: "Organic Cinnamon",
-    description: "Pure organic cinnamon from Sri Lanka. Sweet and warming spice that adds depth to both sweet and savory dishes.",
-    price: 15.99,
+    description: "Pure organic cinnamon from Rwanda's highlands. Sweet and warming spice that adds depth to both sweet and savory dishes.",
+    price: 18000,
     image: "/2.png",
     bgColor: "from-red-50 to-pink-100",
     textColor: "text-red-800"
@@ -38,8 +38,8 @@ const products: Product[] = [
   {
     id: "3",
     name: "Gourmet Nutmeg",
-    description: "Premium nutmeg from Indonesia. A versatile spice that brings warmth and complexity to your culinary creations.",
-    price: 18.99,
+    description: "Premium nutmeg from Rwanda's fertile valleys. A versatile spice that brings warmth and complexity to your culinary creations.",
+    price: 22000,
     image: "/3.png",
     bgColor: "from-yellow-50 to-amber-100",
     textColor: "text-yellow-800"
@@ -47,8 +47,8 @@ const products: Product[] = [
   {
     id: "4",
     name: "Cardamom Supreme",
-    description: "Elite cardamom from Guatemala. Known as the 'Queen of Spices' for its distinctive sweet and aromatic flavor.",
-    price: 22.99,
+    description: "Elite cardamom from Rwanda's volcanic soil. Known as the 'Queen of Spices' for its distinctive sweet and aromatic flavor.",
+    price: 28000,
     image: "/4.png",
     bgColor: "from-green-50 to-emerald-100",
     textColor: "text-green-800"
@@ -56,8 +56,8 @@ const products: Product[] = [
   {
     id: "5",
     name: "Saffron Gold",
-    description: "Premium saffron from Spain. The world's most precious spice, adding golden color and unique flavor to your dishes.",
-    price: 45.99,
+    description: "Premium saffron from Rwanda's high-altitude farms. The world's most precious spice, adding golden color and unique flavor to your dishes.",
+    price: 55000,
     image: "/5.png",
     bgColor: "from-purple-50 to-indigo-100",
     textColor: "text-purple-800"
@@ -322,18 +322,25 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <motion.div 
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="flex items-center space-x-3"
+              className="flex items-center space-x-4"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6 }}
             >
               <motion.div 
-                whileHover={{ scale: 1.1, rotate: 5 }}
-                className="w-10 h-10 bg-green-600 rounded-full flex items-center justify-center"
+                className="w-16 h-16 bg-green-600 rounded-full flex items-center justify-center"
+                whileHover={{ scale: 1.1 }}
+                transition={{ duration: 0.2 }}
               >
-                <span className="text-white font-bold text-xl">S</span>
+                <Image
+                  src="/logo.png"
+                  alt="Emmy Spices Logo"
+                  width={56}
+                  height={56}
+                  className="rounded-full"
+                />
               </motion.div>
-              <h1 className="text-2xl font-bold text-gray-900">Starbucks Spices</h1>
+              <h1 className="text-3xl font-bold text-gray-900">Emmy Spices</h1>
             </motion.div>
             
             <motion.nav 
@@ -524,7 +531,7 @@ export default function Home() {
                     whileHover={{ scale: 1.1 }}
                     transition={{ duration: 0.2 }}
                   >
-                    ${currentProduct.price}
+                    {currentProduct.price.toLocaleString()} RWF
                   </motion.span>
                   <motion.div
                     whileHover={{ scale: 1.05 }}
@@ -638,7 +645,7 @@ export default function Home() {
             viewport={{ once: true }}
             className="text-3xl font-bold text-center text-gray-900 mb-12"
           >
-            Why Choose Starbucks Spices
+            Why Choose Emmy Spices
           </motion.h2>
 
           <motion.div 
@@ -699,7 +706,7 @@ export default function Home() {
         </motion.div>
       </section>
 
-      {/* Enhanced Loading Animation */}
+      {/* Enhanced Loading Animation with Spice Bottle */}
       <motion.div 
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
@@ -708,6 +715,75 @@ export default function Home() {
         className="py-12 bg-gray-50"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          {/* Spice Bottle Dropping Animation */}
+          <motion.div 
+            className="relative h-32 mb-8"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+          >
+            {/* Bottle */}
+            <motion.div
+              className="absolute left-1/2 transform -translate-x-1/2"
+              animate={{ 
+                y: [0, 100, 0],
+                rotate: [0, 5, -5, 0]
+              }}
+              transition={{ 
+                duration: 2,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+            >
+              <div className="w-8 h-16 bg-amber-600 rounded-t-full border-2 border-amber-800">
+                <div className="w-6 h-12 bg-amber-500 rounded-t-full mx-1 mt-1"></div>
+                <div className="w-4 h-2 bg-amber-800 rounded-full mx-2 mt-1"></div>
+              </div>
+              {/* Spice particles dropping */}
+              <motion.div
+                className="absolute top-16 left-1/2 transform -translate-x-1/2"
+                animate={{ 
+                  y: [0, 50],
+                  opacity: [1, 0]
+                }}
+                transition={{ 
+                  duration: 1,
+                  repeat: Infinity,
+                  ease: "easeOut",
+                  delay: 0.5
+                }}
+              >
+                <div className="flex space-x-1">
+                  {[0, 1, 2, 3].map((i) => (
+                    <motion.div
+                      key={i}
+                      className="w-1 h-1 bg-amber-400 rounded-full"
+                      animate={{ 
+                        y: [0, 30],
+                        opacity: [1, 0],
+                        scale: [1, 0.5]
+                      }}
+                      transition={{ 
+                        duration: 1,
+                        repeat: Infinity,
+                        ease: "easeOut",
+                        delay: i * 0.1
+                      }}
+                    />
+                  ))}
+                </div>
+              </motion.div>
+            </motion.div>
+            
+            {/* Ground/Container */}
+            <motion.div
+              className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-16 h-4 bg-amber-200 rounded-full"
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ duration: 0.5, delay: 0.5 }}
+            />
+          </motion.div>
+          
           <motion.div 
             className="flex justify-center items-center space-x-2 mb-4"
             initial={{ opacity: 0, y: 20 }}

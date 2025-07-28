@@ -20,8 +20,8 @@ const products: Product[] = [
   {
     id: "1",
     name: "Premium Black Pepper",
-    description: "High-quality black pepper from India - 24 pieces per box",
-    price: 299.99,
+    description: "High-quality black pepper from Rwanda - 24 pieces per box",
+    price: 360000,
     image: "/1.png",
     boxSize: 24,
     inStock: true
@@ -29,8 +29,8 @@ const products: Product[] = [
   {
     id: "2",
     name: "Organic Cinnamon",
-    description: "Pure organic cinnamon from Sri Lanka - 24 pieces per box",
-    price: 379.99,
+    description: "Pure organic cinnamon from Rwanda's highlands - 24 pieces per box",
+    price: 432000,
     image: "/2.png",
     boxSize: 24,
     inStock: true
@@ -38,8 +38,8 @@ const products: Product[] = [
   {
     id: "3",
     name: "Gourmet Nutmeg",
-    description: "Premium nutmeg from Indonesia - 24 pieces per box",
-    price: 449.99,
+    description: "Premium nutmeg from Rwanda's fertile valleys - 24 pieces per box",
+    price: 528000,
     image: "/3.png",
     boxSize: 24,
     inStock: true
@@ -47,8 +47,8 @@ const products: Product[] = [
   {
     id: "4",
     name: "Cardamom Supreme",
-    description: "Elite cardamom from Guatemala - 24 pieces per box",
-    price: 549.99,
+    description: "Elite cardamom from Rwanda's volcanic soil - 24 pieces per box",
+    price: 672000,
     image: "/4.png",
     boxSize: 24,
     inStock: true
@@ -56,8 +56,8 @@ const products: Product[] = [
   {
     id: "5",
     name: "Saffron Gold",
-    description: "Premium saffron from Spain - 24 pieces per box",
-    price: 1099.99,
+    description: "Premium saffron from Rwanda's high-altitude farms - 24 pieces per box",
+    price: 1320000,
     image: "/5.png",
     boxSize: 24,
     inStock: true
@@ -194,6 +194,22 @@ export default function DistributorPortal() {
               transition={{ duration: 0.6, delay: 0.3 }}
               className="flex items-center space-x-6"
             >
+              <div className="flex items-center space-x-3">
+                <motion.div 
+                  className="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center"
+                  whileHover={{ scale: 1.1 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <Image
+                    src="/logo.png"
+                    alt="Emmy Spices Logo"
+                    width={56}
+                    height={56}
+                    className="rounded-full"
+                  />
+                </motion.div>
+                <h1 className="text-3xl font-bold text-gray-900">Emmy Spices</h1>
+              </div>
               <div className="flex items-center space-x-2">
                 <motion.div
                   whileHover={{ rotate: 5, scale: 1.1 }}
@@ -247,7 +263,7 @@ export default function DistributorPortal() {
             transition={{ duration: 0.6, delay: 0.6 }}
             className="text-gray-600"
           >
-            Order high volumes of premium spices for your business. 
+            Order high volumes of premium spices from Emmy Spices for your business. 
             Minimum order: 1 box (24 pieces) per product.
           </motion.p>
         </motion.div>
@@ -318,7 +334,7 @@ export default function DistributorPortal() {
                   whileHover={{ scale: 1.1 }}
                   transition={{ duration: 0.2 }}
                 >
-                  ${product.price}
+                  {product.price.toLocaleString()} RWF
                 </motion.span>
                 <span className={`text-sm px-2 py-1 rounded-full ${
                   product.inStock 
@@ -462,7 +478,7 @@ export default function DistributorPortal() {
                             </motion.div>
                             <div className="flex-1">
                               <h4 className="font-semibold text-gray-900">{product.name}</h4>
-                              <p className="text-sm text-gray-500">${product.price} per box</p>
+                              <p className="text-sm text-gray-500">{(product.price / 1000).toLocaleString()} RWF per box</p>
                               <p className="text-xs text-gray-400">{product.boxSize} pieces per box</p>
                             </div>
                             <div className="flex items-center space-x-2">
@@ -520,7 +536,7 @@ export default function DistributorPortal() {
                     </div>
                     <div className="flex items-center justify-between mb-4">
                       <span className="text-lg font-semibold text-gray-900">Total Price:</span>
-                      <span className="text-2xl font-bold text-blue-600">${getTotalPrice().toFixed(2)}</span>
+                      <span className="text-2xl font-bold text-blue-600">{(getTotalPrice() / 1000).toLocaleString()} RWF</span>
                     </div>
                     
                     <AnimatePresence>

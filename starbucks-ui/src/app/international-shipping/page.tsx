@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowLeft, Globe, Truck, Package, Send, CheckCircle } from "lucide-react";
+import { ArrowLeft, Globe, Truck, CheckCircle, Package, Send } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 
 interface ShippingForm {
   firstName: string;
@@ -99,6 +100,22 @@ export default function InternationalShipping() {
               </Link>
             </div>
             
+            <div className="flex items-center space-x-3">
+              <motion.div 
+                className="w-16 h-16 bg-purple-600 rounded-full flex items-center justify-center"
+                whileHover={{ scale: 1.1 }}
+                transition={{ duration: 0.2 }}
+              >
+                <Image
+                  src="/logo.png"
+                  alt="Emmy Spices Logo"
+                  width={56}
+                  height={56}
+                  className="rounded-full"
+                />
+              </motion.div>
+              <h1 className="text-3xl font-bold text-gray-900">Emmy Spices</h1>
+            </div>
             <div className="flex items-center space-x-2">
               <Globe className="w-6 h-6 text-purple-600" />
               <h1 className="text-2xl font-bold text-gray-900">International Shipping</h1>
