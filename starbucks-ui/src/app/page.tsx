@@ -125,6 +125,118 @@ const imageVariants = {
   }
 };
 
+// Unique entrance animations for each product
+const productImageVariants = {
+  // Product 1: Black Pepper - Spiral entrance
+  "1": {
+    hidden: { 
+      opacity: 0, 
+      scale: 0.3, 
+      rotateY: -180,
+      rotateZ: 360,
+      filter: "blur(15px)"
+    },
+    visible: {
+      opacity: 1,
+      scale: 1,
+      rotateY: 0,
+      rotateZ: 0,
+      filter: "blur(0px)"
+    },
+    hover: {
+      scale: 1.1,
+      rotateY: 5,
+      rotateZ: 5
+    }
+  },
+  // Product 2: Cinnamon - Bounce entrance
+  "2": {
+    hidden: { 
+      opacity: 0, 
+      scale: 0.2, 
+      y: 100,
+      rotateX: 45,
+      filter: "blur(12px)"
+    },
+    visible: {
+      opacity: 1,
+      scale: 1,
+      y: 0,
+      rotateX: 0,
+      filter: "blur(0px)"
+    },
+    hover: {
+      scale: 1.1,
+      rotateY: 5,
+      y: -5
+    }
+  },
+  // Product 3: Nutmeg - Slide and flip entrance
+  "3": {
+    hidden: { 
+      opacity: 0, 
+      scale: 0.4, 
+      x: -200,
+      rotateY: 90,
+      filter: "blur(10px)"
+    },
+    visible: {
+      opacity: 1,
+      scale: 1,
+      x: 0,
+      rotateY: 0,
+      filter: "blur(0px)"
+    },
+    hover: {
+      scale: 1.1,
+      rotateY: 5,
+      x: 5
+    }
+  },
+  // Product 4: Cardamom - Zoom and rotate entrance
+  "4": {
+    hidden: { 
+      opacity: 0, 
+      scale: 0.1, 
+      rotateY: -90,
+      rotateX: 90,
+      filter: "blur(20px)"
+    },
+    visible: {
+      opacity: 1,
+      scale: 1,
+      rotateY: 0,
+      rotateX: 0,
+      filter: "blur(0px)"
+    },
+    hover: {
+      scale: 1.1,
+      rotateY: 5,
+      rotateX: 2
+    }
+  },
+  // Product 5: Saffron - Fade and glow entrance
+  "5": {
+    hidden: { 
+      opacity: 0, 
+      scale: 0.6, 
+      rotateY: 180,
+      filter: "blur(8px) brightness(0.5)"
+    },
+    visible: {
+      opacity: 1,
+      scale: 1,
+      rotateY: 0,
+      filter: "blur(0px) brightness(1)"
+    },
+    hover: {
+      scale: 1.1,
+      rotateY: 5,
+      filter: "brightness(1.1)"
+    }
+  }
+};
+
 export default function Home() {
   const [currentProductIndex, setCurrentProductIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
@@ -132,12 +244,18 @@ export default function Home() {
   const [isMobile, setIsMobile] = useState(false);
   const [dragStart, setDragStart] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
+  const [showSwipeHint, setShowSwipeHint] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Detect mobile device
   useEffect(() => {
     const checkMobile = () => {
-      setIsMobile(window.innerWidth <= 768);
+      const mobile = window.innerWidth <= 768;
+      setIsMobile(mobile);
+      if (mobile) {
+        setShowSwipeHint(true);
+        setTimeout(() => setShowSwipeHint(false), 3000);
+      }
     };
     
     checkMobile();
@@ -176,10 +294,12 @@ export default function Home() {
     setIsAutoPlaying(false);
   };
 
-  // Touch handlers for mobile
+  // Enhanced touch handlers for mobile
   const handleTouchStart = (e: React.TouchEvent) => {
     setDragStart(e.touches[0].clientX);
     setIsDragging(true);
+    // Pause auto-play on touch
+    setIsAutoPlaying(false);
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
@@ -230,7 +350,7 @@ export default function Home() {
               >
                 <span className="text-white font-bold text-xl">S</span>
               </motion.div>
-              <h1 className="text-2xl font-bold text-gray-900">Emmy's Spices</h1>
+              <h1 className="text-2xl font-bold text-gray-900">Starbucks Spices</h1>
             </motion.div>
             
             <motion.nav 
@@ -321,14 +441,21 @@ export default function Home() {
                   transition={{ duration: 0.3 }}
                 >
                   <motion.div
-                    variants={imageVariants}
+                    variants={productImageVariants[currentProduct.id as keyof typeof productImageVariants]}
                     initial="hidden"
                     animate="visible"
                     whileHover="hover"
                     className="relative w-full h-full"
                     style={{ transformStyle: "preserve-3d" }}
-        >
-          <Image
+                    transition={{
+                      duration: currentProduct.id === "1" ? 1.5 : 
+                               currentProduct.id === "2" ? 1.3 :
+                               currentProduct.id === "3" ? 1.4 :
+                               currentProduct.id === "4" ? 1.6 : 1.8,
+                      ease: "easeOut"
+                    }}
+                  >
+                    <Image
                       src={currentProduct.image}
                       alt={currentProduct.name}
                       fill
@@ -339,9 +466,9 @@ export default function Home() {
                         backfaceVisibility: "hidden"
                       }}
                     />
-                    {/* Glow effect */}
+                    {/* Enhanced Glow effect */}
                     <motion.div
-                      className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent"
+                      className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent"
                       initial={{ opacity: 0, x: -100 }}
                       animate={{ opacity: 1, x: 100 }}
                       transition={{
@@ -349,6 +476,22 @@ export default function Home() {
                         repeat: Infinity,
                         ease: "linear",
                         delay: 1
+                      }}
+                    />
+                    {/* Additional sparkle effect */}
+                    <motion.div
+                      className="absolute inset-0"
+                      animate={{ 
+                        background: [
+                          "radial-gradient(circle at 20% 20%, rgba(255,255,255,0.1) 0%, transparent 50%)",
+                          "radial-gradient(circle at 80% 80%, rgba(255,255,255,0.1) 0%, transparent 50%)",
+                          "radial-gradient(circle at 20% 20%, rgba(255,255,255,0.1) 0%, transparent 50%)"
+                        ]
+                      }}
+                      transition={{
+                        duration: 3,
+                        repeat: Infinity,
+                        ease: "easeInOut"
                       }}
                     />
                   </motion.div>
@@ -436,15 +579,17 @@ export default function Home() {
                   ))}
                 </motion.div>
 
-                {/* Mobile swipe hint */}
-                {isMobile && (
+                {/* Enhanced Mobile swipe hint */}
+                {isMobile && showSwipeHint && (
                   <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 2 }}
-                    className="mt-4 text-sm text-gray-500"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    className="mt-4 p-3 bg-white/80 backdrop-blur-sm rounded-lg shadow-lg"
                   >
-                    ← Swipe to explore →
+                    <p className="text-sm text-gray-600 font-medium">
+                      ← Swipe to explore products →
+                    </p>
                   </motion.div>
                 )}
               </motion.div>
@@ -474,6 +619,24 @@ export default function Home() {
             </motion.button>
           </>
         )}
+
+        {/* Auto-play indicator for desktop */}
+        {!isMobile && isAutoPlaying && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="absolute bottom-4 left-1/2 transform -translate-x-1/2"
+          >
+            <div className="flex items-center space-x-2 bg-white/80 backdrop-blur-sm rounded-full px-4 py-2 shadow-lg">
+              <motion.div
+                animate={{ scale: [1, 1.2, 1] }}
+                transition={{ duration: 1, repeat: Infinity }}
+                className="w-2 h-2 bg-green-500 rounded-full"
+              />
+              <span className="text-sm text-gray-600">Auto-playing</span>
+            </div>
+          </motion.div>
+        )}
       </section>
 
       {/* Enhanced Features Section */}
@@ -492,7 +655,7 @@ export default function Home() {
             viewport={{ once: true }}
             className="text-3xl font-bold text-center text-gray-900 mb-12"
           >
-            Why Choose Emmy's Spices
+            Why Choose Starbucks Spices
           </motion.h2>
 
           <motion.div 
@@ -593,7 +756,7 @@ export default function Home() {
             transition={{ duration: 0.6, delay: 0.4 }}
             viewport={{ once: true }}
           >
-            Urusenda nyarwanda
+            Yurusenda rwisuka arii drops
           </motion.p>
         </div>
       </motion.div>
