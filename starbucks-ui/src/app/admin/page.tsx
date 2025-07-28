@@ -1,32 +1,50 @@
 "use client";
 
-import { useState } from "react";
-import { motion } from "framer-motion";
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { 
-  Shield, ArrowLeft, Package, ShoppingCart, Users, TrendingUp, 
-  DollarSign, Eye, Edit, Trash2, Plus, Search, Filter, Download
+  Package, 
+  ShoppingCart, 
+  Users, 
+  TrendingUp, 
+  ArrowLeft, 
+  Search, 
+  Filter, 
+  Eye, 
+  Edit, 
+  Trash2,
+  AlertTriangle,
+  CheckCircle,
+  Clock,
+  Star
 } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 
 interface Order {
   id: string;
   customerName: string;
   customerEmail: string;
-  orderType: "distributor" | "client";
+  products: Array<{
+    name: string;
+    quantity: number;
+    price: number;
+  }>;
   totalAmount: number;
   status: "pending" | "processing" | "shipped" | "delivered" | "cancelled";
-  date: string;
-  items: number;
+  orderDate: string;
+  shippingAddress: string;
 }
 
 interface Product {
   id: string;
   name: string;
-  category: string;
+  description: string;
   price: number;
-  stock: number;
-  status: "active" | "inactive";
   image: string;
+  stock: number;
+  category: string;
+  rating: number;
 }
 
 const mockOrders: Order[] = [
@@ -34,122 +52,180 @@ const mockOrders: Order[] = [
     id: "ORD-001",
     customerName: "John Smith",
     customerEmail: "john@example.com",
-    orderType: "distributor",
-    totalAmount: 2400,
-    status: "processing",
-    date: "2024-01-15",
-    items: 20
+    products: [
+      { name: "Premium Black Pepper", quantity: 2, price: 12.99 },
+      { name: "Organic Cinnamon", quantity: 1, price: 15.99 }
+    ],
+    totalAmount: 41.97,
+    status: "pending",
+    orderDate: "2024-01-15",
+    shippingAddress: "123 Main St, City, Country"
   },
   {
     id: "ORD-002",
     customerName: "Sarah Johnson",
     customerEmail: "sarah@example.com",
-    orderType: "client",
-    totalAmount: 89.97,
-    status: "shipped",
-    date: "2024-01-14",
-    items: 3
+    products: [
+      { name: "Gourmet Nutmeg", quantity: 3, price: 18.99 },
+      { name: "Cardamom Supreme", quantity: 1, price: 22.99 }
+    ],
+    totalAmount: 79.96,
+    status: "processing",
+    orderDate: "2024-01-14",
+    shippingAddress: "456 Oak Ave, Town, Country"
   },
   {
     id: "ORD-003",
     customerName: "Mike Wilson",
     customerEmail: "mike@example.com",
-    orderType: "distributor",
-    totalAmount: 3600,
-    status: "delivered",
-    date: "2024-01-13",
-    items: 30
+    products: [
+      { name: "Saffron Gold", quantity: 1, price: 45.99 }
+    ],
+    totalAmount: 45.99,
+    status: "shipped",
+    orderDate: "2024-01-13",
+    shippingAddress: "789 Pine Rd, Village, Country"
   },
   {
     id: "ORD-004",
-    customerName: "Lisa Brown",
-    customerEmail: "lisa@example.com",
-    orderType: "client",
-    totalAmount: 156.95,
-    status: "pending",
-    date: "2024-01-12",
-    items: 5
+    customerName: "Emily Davis",
+    customerEmail: "emily@example.com",
+    products: [
+      { name: "Premium Black Pepper", quantity: 5, price: 12.99 },
+      { name: "Organic Cinnamon", quantity: 3, price: 15.99 },
+      { name: "Gourmet Nutmeg", quantity: 2, price: 18.99 }
+    ],
+    totalAmount: 116.88,
+    status: "delivered",
+    orderDate: "2024-01-12",
+    shippingAddress: "321 Elm St, City, Country"
   }
 ];
 
 const mockProducts: Product[] = [
   {
-    id: "PROD-001",
+    id: "1",
     name: "Premium Black Pepper",
-    category: "Pepper",
+    description: "High-quality black pepper from India",
     price: 12.99,
+    image: "/1.png",
     stock: 150,
-    status: "active",
-    image: "🌶️"
+    category: "Pepper",
+    rating: 4.8
   },
   {
-    id: "PROD-002",
+    id: "2",
     name: "Organic Cinnamon",
-    category: "Cinnamon",
+    description: "Pure organic cinnamon from Sri Lanka",
     price: 15.99,
+    image: "/2.png",
     stock: 89,
-    status: "active",
-    image: "🍂"
+    category: "Cinnamon",
+    rating: 4.9
   },
   {
-    id: "PROD-003",
+    id: "3",
     name: "Gourmet Nutmeg",
-    category: "Nutmeg",
+    description: "Premium nutmeg from Indonesia",
     price: 18.99,
+    image: "/3.png",
     stock: 67,
-    status: "active",
-    image: "🌰"
+    category: "Nutmeg",
+    rating: 4.7
   },
   {
-    id: "PROD-004",
+    id: "4",
     name: "Cardamom Supreme",
-    category: "Cardamom",
+    description: "Elite cardamom from Guatemala",
     price: 22.99,
+    image: "/4.png",
     stock: 45,
-    status: "active",
-    image: "🌿"
+    category: "Cardamom",
+    rating: 4.9
   },
   {
-    id: "PROD-005",
+    id: "5",
     name: "Saffron Gold",
-    category: "Saffron",
+    description: "Premium saffron from Spain",
     price: 45.99,
+    image: "/5.png",
     stock: 23,
-    status: "active",
-    image: "🌺"
-  },
-  {
-    id: "PROD-006",
-    name: "Vanilla Bean",
-    category: "Vanilla",
-    price: 28.99,
-    stock: 34,
-    status: "inactive",
-    image: "🌱"
+    category: "Saffron",
+    rating: 5.0
   }
 ];
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+      delayChildren: 0.2
+    }
+  }
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 30 },
+  visible: {
+    opacity: 1,
+    y: 0
+  }
+};
+
+const imageVariants = {
+  hidden: { 
+    opacity: 0, 
+    scale: 0.5, 
+    rotateY: -90,
+    filter: "blur(10px)"
+  },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    rotateY: 0,
+    filter: "blur(0px)"
+  },
+  hover: {
+    scale: 1.05,
+    rotateY: 5
+  }
+};
+
+const statusColors = {
+  pending: "bg-yellow-100 text-yellow-800",
+  processing: "bg-blue-100 text-blue-800",
+  shipped: "bg-purple-100 text-purple-800",
+  delivered: "bg-green-100 text-green-800",
+  cancelled: "bg-red-100 text-red-800"
+};
+
+const statusIcons = {
+  pending: Clock,
+  processing: Package,
+  shipped: ShoppingCart,
+  delivered: CheckCircle,
+  cancelled: AlertTriangle
+};
 
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState<"overview" | "orders" | "products">("overview");
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [isMobile, setIsMobile] = useState(false);
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "pending": return "bg-yellow-100 text-yellow-800";
-      case "processing": return "bg-blue-100 text-blue-800";
-      case "shipped": return "bg-purple-100 text-purple-800";
-      case "delivered": return "bg-green-100 text-green-800";
-      case "cancelled": return "bg-red-100 text-red-800";
-      default: return "bg-gray-100 text-gray-800";
-    }
-  };
-
-  const getOrderTypeColor = (type: string) => {
-    return type === "distributor" 
-      ? "bg-blue-100 text-blue-800" 
-      : "bg-green-100 text-green-800";
-  };
+  // Detect mobile device
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const filteredOrders = mockOrders.filter(order => {
     const matchesSearch = order.customerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -159,338 +235,446 @@ export default function AdminDashboard() {
     return matchesSearch && matchesStatus;
   });
 
-  const stats = {
-    totalOrders: mockOrders.length,
-    totalRevenue: mockOrders.reduce((sum, order) => sum + order.totalAmount, 0),
-    pendingOrders: mockOrders.filter(order => order.status === "pending").length,
-    totalProducts: mockProducts.length
-  };
+  const lowStockProducts = mockProducts.filter(product => product.stock < 50);
+
+  const totalRevenue = mockOrders.reduce((sum, order) => sum + order.totalAmount, 0);
+  const totalOrders = mockOrders.length;
+  const pendingOrders = mockOrders.filter(order => order.status === "pending").length;
+  const averageRating = mockProducts.reduce((sum, product) => sum + product.rating, 0) / mockProducts.length;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-100">
-      {/* Header */}
+      {/* Enhanced Header */}
       <motion.header 
-        initial={{ opacity: 0, y: -20 }}
+        initial={{ opacity: 0, y: -50 }}
         animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
         className="bg-white/80 backdrop-blur-md border-b border-purple-200"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-6">
-            <div className="flex items-center space-x-4">
-              <Link href="/" className="flex items-center space-x-2 text-purple-600 hover:text-purple-700">
-                <ArrowLeft className="w-5 h-5" />
-                <span>Back to Home</span>
-              </Link>
-            </div>
+            <motion.div 
+              initial={{ opacity: 0, x: -30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="flex items-center space-x-4"
+            >
+              <motion.div
+                whileHover={{ scale: 1.05, x: -5 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <Link href="/" className="flex items-center space-x-2 text-purple-600 hover:text-purple-700">
+                  <ArrowLeft className="w-5 h-5" />
+                  <span>Back to Home</span>
+                </Link>
+              </motion.div>
+            </motion.div>
             
-            <div className="flex items-center space-x-2">
-              <Shield className="w-6 h-6 text-purple-600" />
-              <h1 className="text-2xl font-bold text-gray-900">Admin Dashboard</h1>
-            </div>
+            <motion.div 
+              initial={{ opacity: 0, x: 30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              className="flex items-center space-x-6"
+            >
+              <div className="flex items-center space-x-2">
+                <motion.div
+                  whileHover={{ rotate: 5, scale: 1.1 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <Users className="w-6 h-6 text-purple-600" />
+                </motion.div>
+                <h1 className="text-2xl font-bold text-gray-900">Admin Dashboard</h1>
+              </div>
+            </motion.div>
           </div>
         </div>
       </motion.header>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Stats Cards */}
-        <motion.div
+        {/* Enhanced Tab Navigation */}
+        <motion.div 
+          className="flex space-x-1 bg-white/50 backdrop-blur-sm rounded-xl p-1 mb-8"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="grid md:grid-cols-4 gap-6 mb-8"
+          transition={{ duration: 0.6, delay: 0.4 }}
         >
-          <div className="bg-white rounded-2xl shadow-lg p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">Total Orders</p>
-                <p className="text-3xl font-bold text-gray-900">{stats.totalOrders}</p>
-              </div>
-              <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
-                <ShoppingCart className="w-6 h-6 text-blue-600" />
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-2xl shadow-lg p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">Total Revenue</p>
-                <p className="text-3xl font-bold text-gray-900">${stats.totalRevenue.toLocaleString()}</p>
-              </div>
-              <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
-                <DollarSign className="w-6 h-6 text-green-600" />
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-2xl shadow-lg p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">Pending Orders</p>
-                <p className="text-3xl font-bold text-gray-900">{stats.pendingOrders}</p>
-              </div>
-              <div className="w-12 h-12 bg-yellow-100 rounded-xl flex items-center justify-center">
-                <Package className="w-6 h-6 text-yellow-600" />
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-2xl shadow-lg p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">Total Products</p>
-                <p className="text-3xl font-bold text-gray-900">{stats.totalProducts}</p>
-              </div>
-              <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
-                <TrendingUp className="w-6 h-6 text-purple-600" />
-              </div>
-            </div>
-          </div>
+          {[
+            { id: "overview", label: "Overview", icon: TrendingUp },
+            { id: "orders", label: "Orders", icon: ShoppingCart },
+            { id: "products", label: "Products", icon: Package }
+          ].map((tab) => (
+            <motion.button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id as "overview" | "orders" | "products")}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className={`flex items-center space-x-2 px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
+                activeTab === tab.id
+                  ? "bg-white text-purple-600 shadow-lg"
+                  : "text-gray-600 hover:text-purple-600"
+              }`}
+            >
+              <tab.icon className="w-4 h-4" />
+              <span>{tab.label}</span>
+            </motion.button>
+          ))}
         </motion.div>
 
-        {/* Tabs */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="bg-white rounded-2xl shadow-lg mb-8"
-        >
-          <div className="border-b border-gray-200">
-            <nav className="flex space-x-8 px-6">
-              {[
-                { id: "overview", label: "Overview", icon: TrendingUp },
-                { id: "orders", label: "Orders", icon: ShoppingCart },
-                { id: "products", label: "Products", icon: Package }
-              ].map((tab) => (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id as any)}
-                  className={`flex items-center space-x-2 py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
-                    activeTab === tab.id
-                      ? "border-purple-500 text-purple-600"
-                      : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                  }`}
-                >
-                  <tab.icon className="w-4 h-4" />
-                  <span>{tab.label}</span>
-                </button>
-              ))}
-            </nav>
-          </div>
-
-          <div className="p-6">
-            {activeTab === "overview" && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="space-y-6"
+        <AnimatePresence mode="wait">
+          {activeTab === "overview" && (
+            <motion.div
+              key="overview"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.5 }}
+            >
+              {/* Enhanced Stats Cards */}
+              <motion.div 
+                className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8"
+                variants={containerVariants}
+                initial="hidden"
+                animate="visible"
               >
-                <h3 className="text-xl font-bold text-gray-900 mb-4">Recent Activity</h3>
-                <div className="grid md:grid-cols-2 gap-6">
-                  <div>
-                    <h4 className="font-semibold text-gray-900 mb-3">Latest Orders</h4>
-                    <div className="space-y-3">
-                      {mockOrders.slice(0, 3).map((order) => (
-                        <div key={order.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                          <div>
-                            <p className="font-medium text-gray-900">{order.customerName}</p>
-                            <p className="text-sm text-gray-500">{order.id}</p>
-                          </div>
-                          <div className="text-right">
-                            <p className="font-semibold text-gray-900">${order.totalAmount}</p>
-                            <span className={`text-xs px-2 py-1 rounded-full ${getStatusColor(order.status)}`}>
-                              {order.status}
-                            </span>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div>
-                    <h4 className="font-semibold text-gray-900 mb-3">Low Stock Products</h4>
-                    <div className="space-y-3">
-                      {mockProducts.filter(p => p.stock < 50).slice(0, 3).map((product) => (
-                        <div key={product.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                          <div className="flex items-center space-x-3">
-                            <span className="text-2xl">{product.image}</span>
-                            <div>
-                              <p className="font-medium text-gray-900">{product.name}</p>
-                              <p className="text-sm text-gray-500">Stock: {product.stock}</p>
-                            </div>
-                          </div>
-                          <span className="text-sm text-red-600 font-medium">Low Stock</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            )}
-
-            {activeTab === "orders" && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="space-y-6"
-              >
-                <div className="flex items-center justify-between">
-                  <h3 className="text-xl font-bold text-gray-900">All Orders</h3>
-                  <button className="flex items-center space-x-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
-                    <Download className="w-4 h-4" />
-                    <span>Export</span>
-                  </button>
-                </div>
-
-                <div className="flex items-center space-x-4 mb-6">
-                  <div className="flex-1">
-                    <div className="relative">
-                      <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                      <input
-                        type="text"
-                        placeholder="Search orders..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                      />
-                    </div>
-                  </div>
-                  <select
-                    value={statusFilter}
-                    onChange={(e) => setStatusFilter(e.target.value)}
-                    className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                {[
+                  { label: "Total Revenue", value: `$${totalRevenue.toFixed(2)}`, icon: TrendingUp, color: "green" },
+                  { label: "Total Orders", value: totalOrders.toString(), icon: ShoppingCart, color: "blue" },
+                  { label: "Pending Orders", value: pendingOrders.toString(), icon: Clock, color: "yellow" },
+                  { label: "Avg Rating", value: averageRating.toFixed(1), icon: Star, color: "purple" }
+                ].map((stat, index) => (
+                  <motion.div
+                    key={stat.label}
+                    variants={itemVariants}
+                    whileHover={{ 
+                      scale: 1.05,
+                      y: -5,
+                      transition: { duration: 0.2 }
+                    }}
+                    className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300"
                   >
-                    <option value="all">All Status</option>
-                    <option value="pending">Pending</option>
-                    <option value="processing">Processing</option>
-                    <option value="shipped">Shipped</option>
-                    <option value="delivered">Delivered</option>
-                    <option value="cancelled">Cancelled</option>
-                  </select>
-                </div>
-
-                <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
-                  <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
-                      <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Order
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Customer
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Type
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Amount
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Status
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Date
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Actions
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
-                      {filteredOrders.map((order) => (
-                        <tr key={order.id} className="hover:bg-gray-50">
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="text-sm font-medium text-gray-900">{order.id}</div>
-                            <div className="text-sm text-gray-500">{order.items} items</div>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <div className="text-sm font-medium text-gray-900">{order.customerName}</div>
-                            <div className="text-sm text-gray-500">{order.customerEmail}</div>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <span className={`text-xs px-2 py-1 rounded-full ${getOrderTypeColor(order.orderType)}`}>
-                              {order.orderType}
-                            </span>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                            ${order.totalAmount.toLocaleString()}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap">
-                            <span className={`text-xs px-2 py-1 rounded-full ${getStatusColor(order.status)}`}>
-                              {order.status}
-                            </span>
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            {new Date(order.date).toLocaleDateString()}
-                          </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                            <div className="flex items-center space-x-2">
-                              <button className="text-purple-600 hover:text-purple-900">
-                                <Eye className="w-4 h-4" />
-                              </button>
-                              <button className="text-blue-600 hover:text-blue-900">
-                                <Edit className="w-4 h-4" />
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm font-medium text-gray-600">{stat.label}</p>
+                        <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
+                      </div>
+                      <motion.div
+                        whileHover={{ rotate: 5, scale: 1.1 }}
+                        transition={{ duration: 0.2 }}
+                        className={`p-3 rounded-full bg-${stat.color}-100`}
+                      >
+                        <stat.icon className={`w-6 h-6 text-${stat.color}-600`} />
+                      </motion.div>
+                    </div>
+                  </motion.div>
+                ))}
               </motion.div>
-            )}
 
-            {activeTab === "products" && (
+              {/* Enhanced Low Stock Alert */}
               <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="space-y-6"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.3 }}
+                className="bg-white rounded-2xl p-6 shadow-lg mb-8"
               >
-                <div className="flex items-center justify-between">
-                  <h3 className="text-xl font-bold text-gray-900">All Products</h3>
-                  <button className="flex items-center space-x-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
-                    <Plus className="w-4 h-4" />
-                    <span>Add Product</span>
-                  </button>
-                </div>
+                <motion.h3 
+                  className="text-lg font-semibold text-gray-900 mb-4 flex items-center space-x-2"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.5, delay: 0.4 }}
+                >
+                  <AlertTriangle className="w-5 h-5 text-yellow-500" />
+                  <span>Low Stock Alert</span>
+                </motion.h3>
+                <motion.div 
+                  className="grid md:grid-cols-2 lg:grid-cols-3 gap-4"
+                  variants={containerVariants}
+                  initial="hidden"
+                  animate="visible"
+                >
+                  {lowStockProducts.map((product, index) => (
+                    <motion.div
+                      key={product.id}
+                      variants={itemVariants}
+                      whileHover={{ scale: 1.02 }}
+                      className="flex items-center space-x-3 p-3 bg-yellow-50 rounded-lg border border-yellow-200"
+                    >
+                      <motion.div 
+                        className="relative w-12 h-12"
+                        whileHover={{ scale: 1.1 }}
+                        transition={{ duration: 0.2 }}
+                      >
+                        <Image
+                          src={product.image}
+                          alt={product.name}
+                          fill
+                          className="object-contain"
+                        />
+                      </motion.div>
+                      <div className="flex-1">
+                        <p className="font-medium text-gray-900">{product.name}</p>
+                        <p className="text-sm text-yellow-600">Stock: {product.stock}</p>
+                      </div>
+                    </motion.div>
+                  ))}
+                </motion.div>
+              </motion.div>
+            </motion.div>
+          )}
 
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {mockProducts.map((product) => (
-                    <div key={product.id} className="bg-white border border-gray-200 rounded-xl p-6 hover:shadow-lg transition-shadow">
+          {activeTab === "orders" && (
+            <motion.div
+              key="orders"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.5 }}
+            >
+              {/* Enhanced Search and Filter */}
+              <motion.div 
+                className="flex flex-col md:flex-row gap-4 mb-6"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+              >
+                <motion.div 
+                  className="relative flex-1"
+                  whileHover={{ scale: 1.02 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <input
+                    type="text"
+                    placeholder="Search orders..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  />
+                </motion.div>
+                <motion.select
+                  value={statusFilter}
+                  onChange={(e) => setStatusFilter(e.target.value)}
+                  whileHover={{ scale: 1.02 }}
+                  transition={{ duration: 0.2 }}
+                  className="px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                >
+                  <option value="all">All Status</option>
+                  <option value="pending">Pending</option>
+                  <option value="processing">Processing</option>
+                  <option value="shipped">Shipped</option>
+                  <option value="delivered">Delivered</option>
+                  <option value="cancelled">Cancelled</option>
+                </motion.select>
+              </motion.div>
+
+              {/* Enhanced Orders List */}
+              <motion.div 
+                className="space-y-4"
+                variants={containerVariants}
+                initial="hidden"
+                animate="visible"
+              >
+                {filteredOrders.map((order, index) => {
+                  const StatusIcon = statusIcons[order.status];
+                  return (
+                    <motion.div
+                      key={order.id}
+                      variants={itemVariants}
+                      whileHover={{ 
+                        scale: 1.02,
+                        y: -2,
+                        transition: { duration: 0.2 }
+                      }}
+                      className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300"
+                    >
                       <div className="flex items-center justify-between mb-4">
-                        <span className="text-3xl">{product.image}</span>
-                        <span className={`text-xs px-2 py-1 rounded-full ${
-                          product.status === "active" 
-                            ? "bg-green-100 text-green-800" 
-                            : "bg-gray-100 text-gray-800"
-                        }`}>
-                          {product.status}
-                        </span>
+                        <div className="flex items-center space-x-4">
+                          <motion.div
+                            whileHover={{ rotate: 5, scale: 1.1 }}
+                            transition={{ duration: 0.2 }}
+                            className={`p-2 rounded-full ${statusColors[order.status]}`}
+                          >
+                            <StatusIcon className="w-4 h-4" />
+                          </motion.div>
+                          <div>
+                            <h3 className="font-semibold text-gray-900">{order.customerName}</h3>
+                            <p className="text-sm text-gray-500">{order.customerEmail}</p>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <p className="font-semibold text-gray-900">${order.totalAmount.toFixed(2)}</p>
+                          <p className="text-sm text-gray-500">{order.orderDate}</p>
+                        </div>
                       </div>
                       
-                      <h4 className="font-semibold text-gray-900 mb-2">{product.name}</h4>
-                      <p className="text-sm text-gray-500 mb-4">{product.category}</p>
-                      
-                      <div className="flex items-center justify-between mb-4">
-                        <span className="text-lg font-bold text-gray-900">${product.price}</span>
-                        <span className="text-sm text-gray-500">Stock: {product.stock}</span>
+                      <div className="space-y-2 mb-4">
+                        {order.products.map((product, idx) => (
+                          <motion.div
+                            key={idx}
+                            initial={{ opacity: 0, x: -20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: index * 0.1 + idx * 0.05 }}
+                            className="flex justify-between text-sm"
+                          >
+                            <span className="text-gray-600">{product.name} × {product.quantity}</span>
+                            <span className="text-gray-900">${(product.price * product.quantity).toFixed(2)}</span>
+                          </motion.div>
+                        ))}
                       </div>
                       
-                      <div className="flex items-center space-x-2">
-                        <button className="flex-1 flex items-center justify-center space-x-1 px-3 py-2 text-sm text-blue-600 hover:text-blue-700 border border-blue-200 rounded-lg hover:bg-blue-50 transition-colors">
-                          <Edit className="w-4 h-4" />
-                          <span>Edit</span>
-                        </button>
-                        <button className="flex items-center justify-center px-3 py-2 text-sm text-red-600 hover:text-red-700 border border-red-200 rounded-lg hover:bg-red-50 transition-colors">
-                          <Trash2 className="w-4 h-4" />
-                        </button>
+                      <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+                        <p className="text-sm text-gray-500">{order.shippingAddress}</p>
+                        <div className="flex space-x-2">
+                          <motion.button
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                          >
+                            <Eye className="w-4 h-4" />
+                          </motion.button>
+                          <motion.button
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors"
+                          >
+                            <Edit className="w-4 h-4" />
+                          </motion.button>
+                        </div>
+                      </div>
+                    </motion.div>
+                  );
+                })}
+              </motion.div>
+            </motion.div>
+          )}
+
+          {activeTab === "products" && (
+            <motion.div
+              key="products"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.5 }}
+            >
+              {/* Enhanced Products Grid */}
+              <motion.div 
+                className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
+                variants={containerVariants}
+                initial="hidden"
+                animate="visible"
+              >
+                {mockProducts.map((product, index) => (
+                  <motion.div
+                    key={product.id}
+                    variants={itemVariants}
+                    whileHover={{ 
+                      scale: 1.03,
+                      y: -5,
+                      transition: { duration: 0.2 }
+                    }}
+                    className="bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition-all duration-300"
+                  >
+                    <div className="flex items-center justify-between mb-4">
+                      <motion.div 
+                        className="relative w-full h-32"
+                        whileHover={{ scale: 1.05 }}
+                        transition={{ duration: 0.3 }}
+                      >
+                        <motion.div
+                          variants={imageVariants}
+                          initial="hidden"
+                          animate="visible"
+                          whileHover="hover"
+                          className="relative w-full h-full"
+                          style={{ transformStyle: "preserve-3d" }}
+                        >
+                          <Image
+                            src={product.image}
+                            alt={product.name}
+                            fill
+                            className="object-contain"
+                            style={{ 
+                              transform: "translateZ(0)",
+                              backfaceVisibility: "hidden"
+                            }}
+                          />
+                          {/* Glow effect */}
+                          <motion.div
+                            className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent"
+                            initial={{ opacity: 0, x: -100 }}
+                            animate={{ opacity: 1, x: 100 }}
+                            transition={{
+                              duration: 2,
+                              repeat: Infinity,
+                              ease: "linear",
+                              delay: index * 0.2
+                            }}
+                          />
+                        </motion.div>
+                      </motion.div>
+                    </div>
+                    
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2">{product.name}</h3>
+                    <p className="text-gray-600 text-sm mb-4">{product.description}</p>
+                    
+                    <div className="flex items-center justify-between mb-4">
+                      <motion.span 
+                        className="text-xl font-bold text-purple-600"
+                        whileHover={{ scale: 1.1 }}
+                        transition={{ duration: 0.2 }}
+                      >
+                        ${product.price}
+                      </motion.span>
+                      <div className="flex items-center space-x-1">
+                        {[...Array(5)].map((_, i) => (
+                          <Star
+                            key={i}
+                            className={`w-4 h-4 ${
+                              i < Math.floor(product.rating)
+                                ? "text-yellow-400 fill-current"
+                                : "text-gray-300"
+                            }`}
+                          />
+                        ))}
+                        <span className="text-sm text-gray-500 ml-1">({product.rating})</span>
                       </div>
                     </div>
-                  ))}
-                </div>
+                    
+                    <div className="flex items-center justify-between mb-4">
+                      <span className="text-sm text-gray-500">Category: {product.category}</span>
+                      <span className={`text-sm px-2 py-1 rounded-full ${
+                        product.stock > 50 
+                          ? "bg-green-100 text-green-700" 
+                          : product.stock > 20
+                          ? "bg-yellow-100 text-yellow-700"
+                          : "bg-red-100 text-red-700"
+                      }`}>
+                        Stock: {product.stock}
+                      </span>
+                    </div>
+                    
+                    <div className="flex space-x-2">
+                      <motion.button
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        className="flex-1 py-2 px-4 bg-purple-100 text-purple-600 rounded-lg hover:bg-purple-200 transition-colors"
+                      >
+                        <Edit className="w-4 h-4 inline mr-2" />
+                        Edit
+                      </motion.button>
+                      <motion.button
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        className="py-2 px-4 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-colors"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </motion.button>
+                    </div>
+                  </motion.div>
+                ))}
               </motion.div>
-            )}
-          </div>
-        </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );

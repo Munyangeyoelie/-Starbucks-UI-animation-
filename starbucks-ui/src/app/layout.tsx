@@ -5,7 +5,7 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Starbucks UI Animation - Spice Distribution",
+  title: "Emmys Spice - Spice Distribution",
   description: "Premium spice distribution platform with distributor and client portals",
 };
 
