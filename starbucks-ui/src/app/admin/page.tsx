@@ -9,7 +9,6 @@ import {
   TrendingUp, 
   ArrowLeft, 
   Search, 
-  Filter, 
   Eye, 
   Edit, 
   Trash2,
@@ -213,19 +212,7 @@ export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState<"overview" | "orders" | "products">("overview");
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
-  const [isMobile, setIsMobile] = useState(false);
 
-  // Detect mobile device
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth <= 768);
-    };
-    
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
 
   const filteredOrders = mockOrders.filter(order => {
     const matchesSearch = order.customerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -606,7 +593,7 @@ export default function AdminDashboard() {
                               duration: 2,
                               repeat: Infinity,
                               ease: "linear",
-                              delay: index * 0.2
+                              delay: 0
                             }}
                           />
                         </motion.div>

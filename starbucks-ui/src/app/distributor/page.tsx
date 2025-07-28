@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ShoppingCart, Package, ArrowLeft, Plus, Minus, X, CreditCard, Truck } from "lucide-react";
+import { ShoppingCart, Package, ArrowLeft, Plus, Minus, X, Truck } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -106,19 +106,7 @@ export default function DistributorPortal() {
   const [cart, setCart] = useState<Record<string, number>>({});
   const [showCart, setShowCart] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
 
-  // Detect mobile device
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth <= 768);
-    };
-    
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
 
   const addToCart = (productId: string) => {
     setCart(prev => ({
@@ -314,7 +302,7 @@ export default function DistributorPortal() {
                         duration: 2,
                         repeat: Infinity,
                         ease: "linear",
-                        delay: index * 0.2
+                        delay: 0
                       }}
                     />
                   </motion.div>

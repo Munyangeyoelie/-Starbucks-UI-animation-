@@ -121,7 +121,7 @@ export default function InternationalShipping() {
           <h2 className="text-4xl font-bold text-gray-900 mb-4">Ship Outside Africa</h2>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
             Ready to expand your business globally? Fill out this form to request international shipping 
-            for our premium spices. We'll get back to you within 24 hours.
+            for our premium spices. We&apos;ll get back to you within 24 hours.
           </p>
         </motion.div>
 
@@ -141,7 +141,7 @@ export default function InternationalShipping() {
             </p>
             <div className="flex items-center justify-center space-x-2 text-sm text-gray-500">
               <Package className="w-4 h-4" />
-              <span>We'll handle customs and documentation for you</span>
+                              <span>We&apos;ll handle customs and documentation for you</span>
             </div>
           </motion.div>
         ) : (
@@ -333,7 +333,7 @@ export default function InternationalShipping() {
               <ul className="space-y-2 text-sm text-purple-800">
                 <li className="flex items-center space-x-2">
                   <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
-                  <span>We'll review your request within 24 hours</span>
+                  <span>We&apos;ll review your request within 24 hours</span>
                 </li>
                 <li className="flex items-center space-x-2">
                   <div className="w-2 h-2 bg-purple-500 rounded-full"></div>

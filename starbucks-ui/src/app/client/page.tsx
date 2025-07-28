@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ShoppingCart, Heart, Star, ArrowLeft, Plus, Minus, X, CreditCard } from "lucide-react";
 import Link from "next/link";
@@ -113,19 +113,7 @@ export default function ClientPortal() {
   const [showCart, setShowCart] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
-  const [isMobile, setIsMobile] = useState(false);
 
-  // Detect mobile device
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth <= 768);
-    };
-    
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
 
   const addToCart = (productId: string) => {
     setCart(prev => ({
@@ -333,7 +321,7 @@ export default function ClientPortal() {
                         duration: 2,
                         repeat: Infinity,
                         ease: "linear",
-                        delay: index * 0.2
+                        delay: 0
                       }}
                     />
                   </motion.div>

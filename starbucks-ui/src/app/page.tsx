@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence, PanInfo } from "framer-motion";
-import { ShoppingCart, Users, Shield, Package, ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { ShoppingCart, Shield, Package, ChevronLeft, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -106,24 +106,7 @@ const slideVariants = {
   })
 };
 
-const imageVariants = {
-  hidden: { 
-    opacity: 0, 
-    scale: 0.5, 
-    rotateY: -90,
-    filter: "blur(10px)"
-  },
-  visible: {
-    opacity: 1,
-    scale: 1,
-    rotateY: 0,
-    filter: "blur(0px)"
-  },
-  hover: {
-    scale: 1.1,
-    rotateY: 5
-  }
-};
+
 
 // Unique entrance animations for each product
 const productImageVariants = {
@@ -686,7 +669,7 @@ export default function Home() {
                 description: "International shipping available worldwide",
                 icon: "🌍"
               }
-            ].map((feature, index) => (
+            ].map((feature) => (
               <motion.div
                 key={feature.title}
                 variants={itemVariants}
@@ -732,7 +715,7 @@ export default function Home() {
             transition={{ duration: 0.6, delay: 0.2 }}
             viewport={{ once: true }}
           >
-            {[0, 1, 2].map((i) => (
+            {[0, 1, 2].map((i, index) => (
               <motion.div
                 key={i}
                 animate={{ 
