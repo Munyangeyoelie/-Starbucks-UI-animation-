@@ -4,7 +4,7 @@ from .models import Product, Category, ProductImage, ProductReview
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
-    list_display = ['name', 'description', 'product_count', 'created_at']
+    list_display = ['name', 'description', 'created_at']
     list_filter = ['created_at']
     search_fields = ['name', 'description']
     ordering = ['name']
@@ -25,12 +25,10 @@ class ProductReviewInline(admin.TabularInline):
 class ProductAdmin(admin.ModelAdmin):
     list_display = [
         'name', 'category', 'price', 'retail_price', 'wholesale_price',
-        'stock', 'stock_status', 'is_active', 'is_featured', 'rating',
-        'created_at'
+        'stock', 'is_active', 'is_featured', 'rating', 'created_at'
     ]
     list_filter = [
-        'category', 'is_active', 'is_featured', 'created_at',
-        'stock_status'
+        'category', 'is_active', 'is_featured', 'created_at'
     ]
     search_fields = ['name', 'description']
     ordering = ['-created_at']

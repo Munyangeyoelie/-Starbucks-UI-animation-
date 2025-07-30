@@ -18,7 +18,6 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-from rest_framework.documentation import include_docs_urls
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -26,7 +25,7 @@ urlpatterns = [
     path('api/orders/', include('orders.urls')),
     path('api/users/', include('users.urls')),
     path('api/analytics/', include('analytics.urls')),
-    path('api/docs/', include_docs_urls(title='Emmy Spices API')),
+    # path('api/docs/', include_docs_urls(title='Emmy Spices API')),
 ]
 
 # Serve media files in development
