@@ -126,13 +126,13 @@ const Footer = () => {
               </motion.div>
               
               <p className="text-gray-300 mb-6 leading-relaxed">
-                Premium spice distribution platform connecting the world's finest spices with discerning customers. 
+                Premium spice distribution platform connecting the world&apos;s finest spices with discerning customers. 
                 Quality, authenticity, and global reach define our mission.
               </p>
               
               {/* Social Links */}
               <div className="flex space-x-4">
-                {socialLinks.map((social, index) => (
+                {socialLinks.map((social) => (
                   <motion.a
                     key={social.label}
                     href={social.href}
@@ -155,7 +155,7 @@ const Footer = () => {
             <motion.div variants={itemVariants}>
               <h4 className="text-xl font-semibold mb-6 text-green-400">Quick Links</h4>
               <ul className="space-y-3">
-                {quickLinks.map((link, index) => (
+                {quickLinks.map((link) => (
                   <motion.li
                     key={link.label}
                     variants={itemVariants}
@@ -169,7 +169,7 @@ const Footer = () => {
                       <motion.div
                         className="w-1 h-1 bg-green-400 rounded-full"
                         animate={{ scale: [1, 1.5, 1] }}
-                        transition={{ duration: 1, repeat: Infinity, delay: index * 0.2 }}
+                        transition={{ duration: 1, repeat: Infinity }}
                       />
                       <span>{link.label}</span>
                     </Link>
@@ -182,7 +182,7 @@ const Footer = () => {
             <motion.div variants={itemVariants}>
               <h4 className="text-xl font-semibold mb-6 text-green-400">Why Choose Us</h4>
               <ul className="space-y-4">
-                {features.map((feature, index) => (
+                {features.map((feature) => (
                   <motion.li
                     key={feature.title}
                     variants={itemVariants}

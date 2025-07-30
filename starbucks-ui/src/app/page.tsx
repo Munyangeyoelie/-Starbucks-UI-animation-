@@ -1,8 +1,9 @@
+
 "use client";
 
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ShoppingCart, Shield, Package, ChevronLeft, ChevronRight, Star, Award, Users, TrendingUp, ArrowRight, CheckCircle, Globe, Truck, Shield as ShieldIcon, Zap, Mail } from "lucide-react";
+import { ShoppingCart, Shield, Package, ChevronLeft, ChevronRight, Star, Award, Users, TrendingUp, ArrowRight, CheckCircle, Globe, Truck, Shield as ShieldIcon, Zap, Mail, MapPin, Eye, Heart, Share2, Flame, Sparkles } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import Footer from "./components/Footer";
@@ -13,58 +14,169 @@ interface Product {
   name: string;
   description: string;
   price: number;
+  originalPrice: number;
   image: string;
   bgColor: string;
   textColor: string;
+  purchaseCount: number;
+  location: string;
+  userType: "client" | "distributor";
+  coordinates: { lat: number; lng: number };
+  discount: number;
+  rating: number;
+  reviews: number;
+  inStock: boolean;
+  isHot: boolean;
+  isNew: boolean;
 }
+
+// Generate random purchase counts and locations
+const generateRandomData = () => {
+  const locations = [
+    "Kigali, Rwanda", "Nairobi, Kenya", "Dar es Salaam, Tanzania", 
+    "Kampala, Uganda", "Addis Ababa, Ethiopia", "Lagos, Nigeria",
+    "Cairo, Egypt", "Johannesburg, South Africa", "Casablanca, Morocco",
+    "Accra, Ghana", "Dakar, Senegal", "Abidjan, Ivory Coast"
+  ];
+  
+  const coordinates = [
+    { lat: -1.9441, lng: 30.0619 }, // Kigali
+    { lat: -1.2921, lng: 36.8219 }, // Nairobi
+    { lat: -6.8235, lng: 39.2695 }, // Dar es Salaam
+    { lat: 0.3476, lng: 32.5825 }, // Kampala
+    { lat: 9.0320, lng: 38.7636 }, // Addis Ababa
+    { lat: 6.5244, lng: 3.3792 }, // Lagos
+    { lat: 30.0444, lng: 31.2357 }, // Cairo
+    { lat: -26.2041, lng: 28.0473 }, // Johannesburg
+    { lat: 33.5731, lng: -7.5898 }, // Casablanca
+    { lat: 5.5600, lng: -0.2057 }, // Accra
+    { lat: 14.7167, lng: -17.4677 }, // Dakar
+    { lat: 5.3600, lng: -4.0083 } // Abidjan
+  ];
+
+  return {
+    purchaseCount: Math.floor(Math.random() * 500) + 50,
+    location: locations[Math.floor(Math.random() * locations.length)],
+    userType: Math.random() > 0.7 ? "distributor" : "client" as "client" | "distributor",
+    coordinates: coordinates[Math.floor(Math.random() * coordinates.length)],
+    rating: (Math.random() * 0.5 + 4.5).toFixed(1),
+    reviews: Math.floor(Math.random() * 200) + 50
+  };
+};
 
 const products: Product[] = [
   {
     id: "1",
     name: "Premium Black Pepper",
     description: "High-quality black pepper sourced from the finest farms in Rwanda. Perfect for enhancing any dish with its rich, aromatic flavor.",
-    price: 15000,
+    price: 12000, // Discounted price
+    originalPrice: 15000,
     image: "/1.png",
     bgColor: "from-amber-50 to-orange-100",
-    textColor: "text-amber-800"
+    textColor: "text-amber-800",
+    purchaseCount: 0,
+    location: "",
+    userType: "client",
+    coordinates: { lat: 0, lng: 0 },
+    discount: 20,
+    rating: 0,
+    reviews: 0,
+    inStock: true,
+    isHot: true,
+    isNew: false
   },
   {
     id: "2",
     name: "Organic Cinnamon",
     description: "Pure organic cinnamon from Rwanda's highlands. Sweet and warming spice that adds depth to both sweet and savory dishes.",
-    price: 18000,
+    price: 14400, // Discounted price
+    originalPrice: 18000,
     image: "/2.png",
     bgColor: "from-red-50 to-pink-100",
-    textColor: "text-red-800"
+    textColor: "text-red-800",
+    purchaseCount: 0,
+    location: "",
+    userType: "client",
+    coordinates: { lat: 0, lng: 0 },
+    discount: 20,
+    rating: 0,
+    reviews: 0,
+    inStock: true,
+    isHot: false,
+    isNew: true
   },
   {
     id: "3",
     name: "Gourmet Nutmeg",
     description: "Premium nutmeg from Rwanda's fertile valleys. A versatile spice that brings warmth and complexity to your culinary creations.",
-    price: 22000,
+    price: 17600, // Discounted price
+    originalPrice: 22000,
     image: "/3.png",
     bgColor: "from-yellow-50 to-amber-100",
-    textColor: "text-yellow-800"
+    textColor: "text-yellow-800",
+    purchaseCount: 0,
+    location: "",
+    userType: "client",
+    coordinates: { lat: 0, lng: 0 },
+    discount: 20,
+    rating: 0,
+    reviews: 0,
+    inStock: true,
+    isHot: true,
+    isNew: false
   },
   {
     id: "4",
     name: "Cardamom Supreme",
     description: "Elite cardamom from Rwanda's volcanic soil. Known as the 'Queen of Spices' for its distinctive sweet and aromatic flavor.",
-    price: 28000,
+    price: 22400, // Discounted price
+    originalPrice: 28000,
     image: "/4.png",
     bgColor: "from-green-50 to-emerald-100",
-    textColor: "text-green-800"
+    textColor: "text-green-800",
+    purchaseCount: 0,
+    location: "",
+    userType: "client",
+    coordinates: { lat: 0, lng: 0 },
+    discount: 20,
+    rating: 0,
+    reviews: 0,
+    inStock: true,
+    isHot: false,
+    isNew: true
   },
   {
     id: "5",
     name: "Saffron Gold",
     description: "Premium saffron from Rwanda's high-altitude farms. The world's most precious spice, adding golden color and unique flavor to your dishes.",
-    price: 55000,
+    price: 44000, // Discounted price
+    originalPrice: 55000,
     image: "/5.png",
     bgColor: "from-purple-50 to-indigo-100",
-    textColor: "text-purple-800"
+    textColor: "text-purple-800",
+    purchaseCount: 0,
+    location: "",
+    userType: "client",
+    coordinates: { lat: 0, lng: 0 },
+    discount: 20,
+    rating: 0,
+    reviews: 0,
+    inStock: true,
+    isHot: true,
+    isNew: false
   }
 ];
+
+// Initialize products with random data
+products.forEach(product => {
+  const randomData = generateRandomData();
+  product.purchaseCount = randomData.purchaseCount;
+  product.location = randomData.location;
+  product.userType = randomData.userType;
+  product.coordinates = randomData.coordinates;
+  product.rating = parseFloat(randomData.rating);
+  product.reviews = randomData.reviews;
+});
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -108,116 +220,118 @@ const slideVariants = {
   })
 };
 
-
-
-// Unique entrance animations for each product
+// Enhanced entrance animations for each product with advanced color grading
 const productImageVariants = {
-  // Product 1: Black Pepper - Spiral entrance
+  // Product 1: Black Pepper - Spiral entrance with golden glow
   "1": {
     hidden: { 
       opacity: 0, 
       scale: 0.3, 
       rotateY: -180,
       rotateZ: 360,
-      filter: "blur(15px)"
+      filter: "blur(15px) brightness(0.5) sepia(0.3)"
     },
     visible: {
       opacity: 1,
       scale: 1,
       rotateY: 0,
       rotateZ: 0,
-      filter: "blur(0px)"
+      filter: "blur(0px) brightness(1.1) sepia(0.1) saturate(1.2)"
     },
     hover: {
       scale: 1.1,
       rotateY: 5,
-      rotateZ: 5
+      rotateZ: 5,
+      filter: "brightness(1.2) saturate(1.3) contrast(1.1)"
     }
   },
-  // Product 2: Cinnamon - Bounce entrance
+  // Product 2: Cinnamon - Bounce entrance with warm tones
   "2": {
     hidden: { 
       opacity: 0, 
       scale: 0.2, 
       y: 100,
       rotateX: 45,
-      filter: "blur(12px)"
+      filter: "blur(12px) brightness(0.6) hue-rotate(30deg)"
     },
     visible: {
       opacity: 1,
       scale: 1,
       y: 0,
       rotateX: 0,
-      filter: "blur(0px)"
+      filter: "blur(0px) brightness(1.05) hue-rotate(15deg) saturate(1.1)"
     },
     hover: {
       scale: 1.1,
       rotateY: 5,
-      y: -5
+      y: -5,
+      filter: "brightness(1.15) saturate(1.2) contrast(1.05)"
     }
   },
-  // Product 3: Nutmeg - Slide and flip entrance
+  // Product 3: Nutmeg - Slide and flip entrance with amber tones
   "3": {
     hidden: { 
       opacity: 0, 
       scale: 0.4, 
       x: -200,
       rotateY: 90,
-      filter: "blur(10px)"
+      filter: "blur(10px) brightness(0.7) sepia(0.2)"
     },
     visible: {
       opacity: 1,
       scale: 1,
       x: 0,
       rotateY: 0,
-      filter: "blur(0px)"
+      filter: "blur(0px) brightness(1.08) sepia(0.1) saturate(1.15)"
     },
     hover: {
       scale: 1.1,
       rotateY: 5,
-      x: 5
+      x: 5,
+      filter: "brightness(1.18) saturate(1.25) contrast(1.08)"
     }
   },
-  // Product 4: Cardamom - Zoom and rotate entrance
+  // Product 4: Cardamom - Zoom and rotate entrance with green tones
   "4": {
     hidden: { 
       opacity: 0, 
       scale: 0.1, 
       rotateY: -90,
       rotateX: 90,
-      filter: "blur(20px)"
+      filter: "blur(20px) brightness(0.5) hue-rotate(120deg)"
     },
     visible: {
       opacity: 1,
       scale: 1,
       rotateY: 0,
       rotateX: 0,
-      filter: "blur(0px)"
+      filter: "blur(0px) brightness(1.06) hue-rotate(60deg) saturate(1.1)"
     },
     hover: {
       scale: 1.1,
       rotateY: 5,
-      rotateX: 2
+      rotateX: 2,
+      filter: "brightness(1.16) saturate(1.2) contrast(1.06)"
     }
   },
-  // Product 5: Saffron - Fade and glow entrance
+  // Product 5: Saffron - Fade and glow entrance with golden tones
   "5": {
     hidden: { 
       opacity: 0, 
       scale: 0.6, 
       rotateY: 180,
-      filter: "blur(8px) brightness(0.5)"
+      filter: "blur(8px) brightness(0.5) sepia(0.4) hue-rotate(45deg)"
     },
     visible: {
       opacity: 1,
       scale: 1,
       rotateY: 0,
-      filter: "blur(0px) brightness(1)"
+      filter: "blur(0px) brightness(1.12) sepia(0.2) saturate(1.3)"
     },
     hover: {
       scale: 1.1,
       rotateY: 5,
-      filter: "brightness(1.1)"
+      filter: "brightness(1.22) saturate(1.35) contrast(1.12)"
     }
   }
 };
@@ -230,7 +344,24 @@ export default function Home() {
   const [dragStart, setDragStart] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [showSwipeHint, setShowSwipeHint] = useState(false);
+  const [purchaseCounts, setPurchaseCounts] = useState<Record<string, number>>({});
   const containerRef = useRef<HTMLDivElement>(null);
+
+  // Initialize and update random purchase counts
+  useEffect(() => {
+    const updatePurchaseCounts = () => {
+      const newCounts: Record<string, number> = {};
+      products.forEach(product => {
+        newCounts[product.id] = Math.floor(Math.random() * 500) + 50;
+      });
+      setPurchaseCounts(newCounts);
+    };
+
+    updatePurchaseCounts();
+    const interval = setInterval(updatePurchaseCounts, 30000); // Update every 30 seconds
+
+    return () => clearInterval(interval);
+  }, []);
 
   // Detect mobile device
   useEffect(() => {
@@ -355,7 +486,7 @@ export default function Home() {
                 { href: "/distributor", label: "Distributor Portal", icon: Package },
                 { href: "/client", label: "Client Portal", icon: ShoppingCart },
                 { href: "/admin", label: "Admin Dashboard", icon: Shield }
-              ].map((link, index) => (
+              ].map((link) => (
                 <motion.div
                   key={link.href}
                   variants={itemVariants}
@@ -501,6 +632,40 @@ export default function Home() {
                 }}
                 className="text-center lg:text-left"
               >
+                {/* Product badges */}
+                <motion.div 
+                  className="flex justify-center lg:justify-start space-x-2 mb-4"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.6 }}
+                >
+                  {currentProduct.isHot && (
+                    <motion.div
+                      className="flex items-center space-x-1 px-3 py-1 bg-red-100 text-red-700 rounded-full text-sm font-medium"
+                      whileHover={{ scale: 1.05 }}
+                    >
+                      <Flame className="w-4 h-4" />
+                      <span>Hot</span>
+                    </motion.div>
+                  )}
+                  {currentProduct.isNew && (
+                    <motion.div
+                      className="flex items-center space-x-1 px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-medium"
+                      whileHover={{ scale: 1.05 }}
+                    >
+                      <Sparkles className="w-4 h-4" />
+                      <span>New</span>
+                    </motion.div>
+                  )}
+                  <motion.div
+                    className="flex items-center space-x-1 px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-medium"
+                    whileHover={{ scale: 1.05 }}
+                  >
+                    <TrendingUp className="w-4 h-4" />
+                    <span>-{currentProduct.discount}% OFF</span>
+                  </motion.div>
+                </motion.div>
+
                 <motion.h1 
                   key={`title-${currentProductIndex}`}
                   initial={{ opacity: 0, y: 30, scale: 0.8 }}
@@ -521,20 +686,93 @@ export default function Home() {
                   {currentProduct.description}
                 </motion.p>
 
+                {/* Enhanced price display with discount */}
                 <motion.div
                   key={`price-${currentProductIndex}`}
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, delay: 1.1 }}
-                  className="flex items-center justify-center lg:justify-start space-x-6 mb-8"
+                  className="flex items-center justify-center lg:justify-start space-x-6 mb-6"
                 >
-                  <motion.span 
-                    className="text-3xl font-bold text-green-600"
-                    whileHover={{ scale: 1.1 }}
-                    transition={{ duration: 0.2 }}
+                  <div className="flex items-center space-x-3">
+                    <motion.span 
+                      className="text-3xl font-bold text-green-600"
+                      whileHover={{ scale: 1.1 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      {currentProduct.price.toLocaleString()} RWF
+                    </motion.span>
+                    <motion.span 
+                      className="text-xl text-gray-400 line-through"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 1.3 }}
+                    >
+                      {currentProduct.originalPrice.toLocaleString()} RWF
+                    </motion.span>
+                  </div>
+                </motion.div>
+
+                {/* Purchase count and location */}
+                <motion.div
+                  key={`stats-${currentProductIndex}`}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 1.3 }}
+                  className="flex flex-col sm:flex-row items-center justify-center lg:justify-start space-y-2 sm:space-y-0 sm:space-x-6 mb-8"
+                >
+                  <motion.div 
+                    className="flex items-center space-x-2 text-sm text-gray-600"
+                    whileHover={{ scale: 1.05 }}
                   >
-                    {currentProduct.price.toLocaleString()} RWF
-                  </motion.span>
+                    <Users className="w-4 h-4" />
+                    <span>{purchaseCounts[currentProduct.id] || currentProduct.purchaseCount} people bought this</span>
+                  </motion.div>
+                  
+                  <motion.div 
+                    className="flex items-center space-x-2 text-sm text-gray-600"
+                    whileHover={{ scale: 1.05 }}
+                  >
+                    <MapPin className="w-4 h-4" />
+                    <span>{currentProduct.location}</span>
+                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                      currentProduct.userType === 'distributor' 
+                        ? 'bg-blue-100 text-blue-700' 
+                        : 'bg-green-100 text-green-700'
+                    }`}>
+                      {currentProduct.userType}
+                    </span>
+                  </motion.div>
+                </motion.div>
+
+                {/* Rating and reviews */}
+                <motion.div
+                  key={`rating-${currentProductIndex}`}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 1.5 }}
+                  className="flex items-center justify-center lg:justify-start space-x-4 mb-8"
+                >
+                  <div className="flex items-center space-x-1">
+                    {[...Array(5)].map((_, i) => (
+                      <Star 
+                        key={i} 
+                        className={`w-5 h-5 ${i < Math.floor(currentProduct.rating) ? 'text-yellow-400 fill-current' : 'text-gray-300'}`} 
+                      />
+                    ))}
+                    <span className="ml-2 text-sm text-gray-600">
+                      {currentProduct.rating} ({currentProduct.reviews} reviews)
+                    </span>
+                  </div>
+                </motion.div>
+
+                <motion.div
+                  key={`actions-${currentProductIndex}`}
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 1.7 }}
+                  className="flex items-center justify-center lg:justify-start space-x-4"
+                >
                   <motion.div
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
@@ -547,14 +785,38 @@ export default function Home() {
                       <span>Shop Now</span>
                     </Link>
                   </motion.div>
+                  
+                  <motion.div className="flex space-x-2">
+                    <motion.button
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.9 }}
+                      className="p-3 bg-gray-100 hover:bg-gray-200 rounded-full transition-colors"
+                    >
+                      <Heart className="w-5 h-5 text-gray-600" />
+                    </motion.button>
+                    <motion.button
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.9 }}
+                      className="p-3 bg-gray-100 hover:bg-gray-200 rounded-full transition-colors"
+                    >
+                      <Share2 className="w-5 h-5 text-gray-600" />
+                    </motion.button>
+                    <motion.button
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.9 }}
+                      className="p-3 bg-gray-100 hover:bg-gray-200 rounded-full transition-colors"
+                    >
+                      <Eye className="w-5 h-5 text-gray-600" />
+                    </motion.button>
+                  </motion.div>
                 </motion.div>
 
                 {/* Enhanced Product Indicators */}
                 <motion.div 
-                  className="flex justify-center lg:justify-start space-x-2"
+                  className="flex justify-center lg:justify-start space-x-2 mt-8"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  transition={{ delay: 1.3 }}
+                  transition={{ delay: 1.9 }}
                 >
                   {products.map((_, index) => (
                     <motion.button
@@ -864,7 +1126,7 @@ export default function Home() {
             transition={{ duration: 0.6, delay: 0.2 }}
             viewport={{ once: true }}
           >
-            {[0, 1, 2].map((i, index) => (
+            {[0, 1, 2].map((i) => (
               <motion.div
                 key={i}
                 animate={{ 

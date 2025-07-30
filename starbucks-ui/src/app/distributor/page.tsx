@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ShoppingCart, Package, ArrowLeft, Plus, Minus, X, Truck } from "lucide-react";
 import Link from "next/link";
@@ -275,7 +275,7 @@ export default function DistributorPortal() {
           initial="hidden"
           animate="visible"
         >
-          {products.map((product, index) => (
+          {products.map((product) => (
             <motion.div
               key={product.id}
               variants={itemVariants}
@@ -453,7 +453,7 @@ export default function DistributorPortal() {
                       initial="hidden"
                       animate="visible"
                     >
-                      {Object.entries(cart).map(([productId, quantity], index) => {
+                      {Object.entries(cart).map(([productId, quantity]) => {
                         const product = products.find(p => p.id === productId);
                         if (!product) return null;
                         

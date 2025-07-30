@@ -215,7 +215,7 @@ export default function AdminDashboard() {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [showAddProduct, setShowAddProduct] = useState(false);
-  const [showOrderDetails, setShowOrderDetails] = useState<string | null>(null);
+
 
 
   const filteredOrders = mockOrders.filter(order => {
