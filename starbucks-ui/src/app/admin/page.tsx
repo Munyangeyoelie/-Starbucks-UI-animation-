@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   Package, 
@@ -15,7 +15,9 @@ import {
   AlertTriangle,
   CheckCircle,
   Clock,
-  Star
+  Star,
+  Plus,
+  X
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
@@ -212,6 +214,8 @@ export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState<"overview" | "orders" | "products">("overview");
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [showAddProduct, setShowAddProduct] = useState(false);
+  const [showOrderDetails, setShowOrderDetails] = useState<string | null>(null);
 
 
   const filteredOrders = mockOrders.filter(order => {
@@ -344,7 +348,7 @@ export default function AdminDashboard() {
                   { label: "Total Orders", value: totalOrders.toString(), icon: ShoppingCart, color: "blue" },
                   { label: "Pending Orders", value: pendingOrders.toString(), icon: Clock, color: "yellow" },
                   { label: "Avg Rating", value: averageRating.toFixed(1), icon: Star, color: "purple" }
-                ].map((stat, index) => (
+                ].map((stat) => (
                   <motion.div
                     key={stat.label}
                     variants={itemVariants}
@@ -394,7 +398,7 @@ export default function AdminDashboard() {
                   initial="hidden"
                   animate="visible"
                 >
-                  {lowStockProducts.map((product, index) => (
+                  {lowStockProducts.map((product) => (
                     <motion.div
                       key={product.id}
                       variants={itemVariants}
@@ -558,6 +562,23 @@ export default function AdminDashboard() {
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.5 }}
             >
+              {/* Add Product Button */}
+              <motion.div 
+                className="mb-6"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+              >
+                <motion.button
+                  onClick={() => setShowAddProduct(true)}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="px-6 py-3 bg-green-600 text-white rounded-xl hover:bg-green-700 transition-all duration-300 shadow-lg flex items-center space-x-2"
+                >
+                  <Plus className="w-5 h-5" />
+                  <span>Add New Product</span>
+                </motion.button>
+              </motion.div>
               {/* Enhanced Products Grid */}
               <motion.div 
                 className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
@@ -565,7 +586,7 @@ export default function AdminDashboard() {
                 initial="hidden"
                 animate="visible"
               >
-                {mockProducts.map((product, index) => (
+                {mockProducts.map((product) => (
                   <motion.div
                     key={product.id}
                     variants={itemVariants}
@@ -679,6 +700,116 @@ export default function AdminDashboard() {
           )}
         </AnimatePresence>
       </div>
+
+      {/* Add Product Modal */}
+      <AnimatePresence>
+        {showAddProduct && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8, y: 50 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.8, y: 50 }}
+              className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full max-h-[90vh] overflow-y-auto"
+            >
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-2xl font-bold text-gray-900">Add New Product</h3>
+                <motion.button
+                  onClick={() => setShowAddProduct(false)}
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                  className="p-2 text-gray-400 hover:text-gray-600 transition-colors"
+                >
+                  <X className="w-6 h-6" />
+                </motion.button>
+              </div>
+              
+              <form className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Product Name</label>
+                  <input
+                    type="text"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    placeholder="Enter product name"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                  <textarea
+                    rows={3}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    placeholder="Enter product description"
+                  />
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Price (RWF)</label>
+                    <input
+                      type="number"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                      placeholder="0"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Stock</label>
+                    <input
+                      type="number"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                      placeholder="0"
+                    />
+                  </div>
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Category</label>
+                  <select className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                    <option value="">Select category</option>
+                    <option value="pepper">Pepper</option>
+                    <option value="cinnamon">Cinnamon</option>
+                    <option value="nutmeg">Nutmeg</option>
+                    <option value="cardamom">Cardamom</option>
+                    <option value="saffron">Saffron</option>
+                  </select>
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Product Image</label>
+                  <div className="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center hover:border-purple-400 transition-colors">
+                    <Package className="w-8 h-8 text-gray-400 mx-auto mb-2" />
+                    <p className="text-sm text-gray-500">Click to upload image</p>
+                  </div>
+                </div>
+                
+                <div className="flex space-x-4 pt-4">
+                  <motion.button
+                    type="button"
+                    onClick={() => setShowAddProduct(false)}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="flex-1 px-6 py-3 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-colors"
+                  >
+                    Cancel
+                  </motion.button>
+                  <motion.button
+                    type="submit"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="flex-1 px-6 py-3 bg-purple-600 text-white rounded-xl hover:bg-purple-700 transition-colors"
+                  >
+                    Add Product
+                  </motion.button>
+                </div>
+              </form>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 } 

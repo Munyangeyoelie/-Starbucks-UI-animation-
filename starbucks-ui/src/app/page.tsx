@@ -2,9 +2,11 @@
 
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ShoppingCart, Shield, Package, ChevronLeft, ChevronRight } from "lucide-react";
+import { ShoppingCart, Shield, Package, ChevronLeft, ChevronRight, Star, Award, Users, TrendingUp, ArrowRight, CheckCircle, Globe, Truck, Shield as ShieldIcon, Zap, Mail } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
+import Footer from "./components/Footer";
+import Chatbot from "./components/Chatbot";
 
 interface Product {
   id: string;
@@ -539,7 +541,7 @@ export default function Home() {
                   >
                     <Link 
                       href="/client"
-                      className="flex items-center space-x-2 px-6 py-3 bg-green-600 text-white rounded-xl hover:bg-green-700 transition-all duration-300 shadow-lg hover:shadow-xl"
+                      className="flex items-center space-x-2 px-6 py-3 bg-green-600 text-white rounded-xl hover:bg-green-700 transition-all duration-300 shadow-lg hover:shadow-xl animate-pulse-glow"
                     >
                       <ShoppingCart className="w-5 h-5" />
                       <span>Shop Now</span>
@@ -630,7 +632,7 @@ export default function Home() {
       </section>
 
       {/* Enhanced Features Section */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-white">
+      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-gray-50 to-green-50">
         <motion.div 
           className="max-w-7xl mx-auto"
           initial={{ opacity: 0 }}
@@ -643,7 +645,7 @@ export default function Home() {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
             viewport={{ once: true }}
-            className="text-3xl font-bold text-center text-gray-900 mb-12"
+            className="text-4xl font-bold text-center text-gray-900 mb-16"
           >
             Why Choose Emmy Spices
           </motion.h2>
@@ -658,48 +660,119 @@ export default function Home() {
             {[
               {
                 title: "Premium Quality",
-                description: "Finest spices sourced from around the world",
-                icon: "🌿"
+                description: "Finest spices sourced from around the world with rigorous quality control",
+                icon: Star,
+                color: "from-yellow-400 to-orange-500",
+                bgColor: "bg-yellow-50"
               },
               {
                 title: "Fast Delivery",
-                description: "Quick and reliable shipping to your doorstep",
-                icon: "🚚"
+                description: "Quick and reliable shipping to your doorstep with real-time tracking",
+                icon: Truck,
+                color: "from-blue-400 to-cyan-500",
+                bgColor: "bg-blue-50"
               },
               {
                 title: "Secure Payments",
-                description: "Safe transactions with Flutterwave integration",
-                icon: "🔒"
+                description: "Safe transactions with Flutterwave integration and 256-bit encryption",
+                icon: ShieldIcon,
+                color: "from-green-400 to-emerald-500",
+                bgColor: "bg-green-50"
               },
               {
                 title: "Global Shipping",
-                description: "International shipping available worldwide",
-                icon: "🌍"
+                description: "International shipping available worldwide with customs handling",
+                icon: Globe,
+                color: "from-purple-400 to-pink-500",
+                bgColor: "bg-purple-50"
               }
-            ].map((feature) => (
+            ].map((feature, index) => (
               <motion.div
                 key={feature.title}
                 variants={itemVariants}
                 whileHover={{ 
                   scale: 1.05,
-                  y: -5,
-                  transition: { duration: 0.2 }
+                  y: -10,
+                  transition: { duration: 0.3 }
                 }}
-                className="text-center p-6 rounded-2xl hover:shadow-lg transition-all duration-300"
+                className={`text-center p-8 rounded-2xl ${feature.bgColor} hover:shadow-2xl transition-all duration-500 border border-transparent hover:border-gray-200`}
               >
                 <motion.div 
-                  className="text-4xl mb-4"
-                  whileHover={{ rotate: 10, scale: 1.1 }}
-                  transition={{ duration: 0.3 }}
+                  className={`w-16 h-16 bg-gradient-to-r ${feature.color} rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg`}
+                  whileHover={{ 
+                    rotate: 360, 
+                    scale: 1.1,
+                    transition: { duration: 0.6 }
+                  }}
+                  initial={{ scale: 0, rotate: -180 }}
+                  whileInView={{ scale: 1, rotate: 0 }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                  viewport={{ once: true }}
                 >
-                  {feature.icon}
+                  <feature.icon className="w-8 h-8 text-white" />
                 </motion.div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                <h3 className="text-xl font-bold text-gray-900 mb-4">
                   {feature.title}
                 </h3>
-                <p className="text-gray-600 text-sm">
+                <p className="text-gray-600 leading-relaxed">
                   {feature.description}
                 </p>
+                
+                {/* Animated checkmark */}
+                <motion.div
+                  className="mt-6 flex justify-center"
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 1 }}
+                  transition={{ delay: index * 0.1 + 0.5 }}
+                  viewport={{ once: true }}
+                >
+                  <CheckCircle className="w-6 h-6 text-green-500" />
+                </motion.div>
+              </motion.div>
+            ))}
+          </motion.div>
+          
+          {/* Additional feature highlights */}
+          <motion.div 
+            className="mt-16 grid md:grid-cols-3 gap-8"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+            viewport={{ once: true }}
+          >
+            {[
+              {
+                title: "24/7 Support",
+                description: "Round-the-clock customer service",
+                icon: Zap
+              },
+              {
+                title: "Quality Guarantee",
+                description: "100% satisfaction or money back",
+                icon: Award
+              },
+              {
+                title: "Bulk Discounts",
+                description: "Special pricing for large orders",
+                icon: TrendingUp
+              }
+            ].map((highlight, index) => (
+              <motion.div
+                key={highlight.title}
+                className="flex items-center space-x-4 p-4 bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300"
+                whileHover={{ x: 5 }}
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                viewport={{ once: true }}
+              >
+                <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                  <highlight.icon className="w-6 h-6 text-green-600" />
+                </div>
+                <div>
+                  <h4 className="font-semibold text-gray-900">{highlight.title}</h4>
+                  <p className="text-sm text-gray-600">{highlight.description}</p>
+                </div>
               </motion.div>
             ))}
           </motion.div>
@@ -819,6 +892,452 @@ export default function Home() {
           </motion.p>
         </div>
       </motion.div>
+
+      {/* New: Statistics Section */}
+      <section className="py-20 bg-gradient-to-r from-green-600 to-emerald-700 text-white">
+        <motion.div 
+          className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ duration: 0.8 }}
+          viewport={{ once: true }}
+        >
+          <motion.h2 
+            className="text-4xl font-bold text-center mb-16"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+          >
+            Emmy Spices by the Numbers
+          </motion.h2>
+          
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+            {[
+              { number: "50K+", label: "Happy Customers", icon: Users },
+              { number: "100+", label: "Countries Served", icon: Globe },
+              { number: "99.9%", label: "Quality Rating", icon: Star },
+              { number: "24/7", label: "Customer Support", icon: Award }
+            ].map((stat, index) => (
+              <motion.div
+                key={stat.label}
+                className="text-center"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+                viewport={{ once: true }}
+                whileHover={{ scale: 1.05 }}
+              >
+                <motion.div
+                  className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4"
+                  whileHover={{ rotate: 360 }}
+                  transition={{ duration: 0.6 }}
+                >
+                  <stat.icon className="w-8 h-8" />
+                </motion.div>
+                <motion.div
+                  className="text-3xl md:text-4xl font-bold mb-2"
+                  initial={{ scale: 0 }}
+                  whileInView={{ scale: 1 }}
+                  transition={{ duration: 0.5, delay: index * 0.1 + 0.3 }}
+                  viewport={{ once: true }}
+                >
+                  {stat.number}
+                </motion.div>
+                <p className="text-green-100">{stat.label}</p>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
+      </section>
+
+      {/* New: Testimonials Section */}
+      <section className="py-20 bg-white">
+        <motion.div 
+          className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ duration: 0.8 }}
+          viewport={{ once: true }}
+        >
+          <motion.h2 
+            className="text-4xl font-bold text-center text-gray-900 mb-16"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+          >
+            What Our Customers Say
+          </motion.h2>
+          
+          <div className="grid md:grid-cols-3 gap-8">
+            {[
+              {
+                name: "Sarah Johnson",
+                role: "Chef, Le Gourmet",
+                content: "Emmy Spices has transformed my kitchen. The quality is unmatched and delivery is always on time. My customers love the authentic flavors!",
+                rating: 5,
+                avatar: "👩‍🍳"
+              },
+              {
+                name: "Michael Chen",
+                role: "Restaurant Owner",
+                content: "The best spice supplier I've ever worked with. Their international shipping is reliable and the product quality is consistently excellent.",
+                rating: 5,
+                avatar: "👨‍💼"
+              },
+              {
+                name: "Amina Hassan",
+                role: "Home Chef",
+                content: "I love how easy it is to order from Emmy Spices. The website is beautiful and the spices are always fresh. Highly recommended!",
+                rating: 5,
+                avatar: "👩‍🍳"
+              }
+            ].map((testimonial, index) => (
+              <motion.div
+                key={testimonial.name}
+                className="bg-gradient-to-br from-green-50 to-emerald-50 p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: index * 0.2 }}
+                viewport={{ once: true }}
+                whileHover={{ y: -5 }}
+              >
+                <div className="flex items-center mb-4">
+                  <div className="text-3xl mr-4">{testimonial.avatar}</div>
+                  <div>
+                    <h4 className="font-semibold text-gray-900">{testimonial.name}</h4>
+                    <p className="text-sm text-gray-600">{testimonial.role}</p>
+                  </div>
+                </div>
+                
+                <div className="flex mb-4">
+                  {[...Array(testimonial.rating)].map((_, i) => (
+                    <Star key={i} className="w-5 h-5 text-yellow-400 fill-current" />
+                  ))}
+                </div>
+                
+                <p className="text-gray-700 leading-relaxed">&ldquo;{testimonial.content}&rdquo;</p>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
+      </section>
+
+      {/* New: Product Categories Section */}
+      <section className="py-20 bg-white">
+        <motion.div 
+          className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ duration: 0.8 }}
+          viewport={{ once: true }}
+        >
+          <motion.h2 
+            className="text-4xl font-bold text-center text-gray-900 mb-16"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+          >
+            Explore Our Spice Categories
+          </motion.h2>
+          
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[
+              {
+                title: "Pepper Varieties",
+                description: "From black to white, pink to green",
+                image: "/1.png",
+                count: "12 Products",
+                color: "from-amber-500 to-orange-600"
+              },
+              {
+                title: "Cinnamon Collection",
+                description: "Sweet and aromatic varieties",
+                image: "/2.png",
+                count: "8 Products",
+                color: "from-red-500 to-pink-600"
+              },
+              {
+                title: "Nutmeg & Mace",
+                description: "Warm and complex flavors",
+                image: "/3.png",
+                count: "6 Products",
+                color: "from-yellow-500 to-amber-600"
+              },
+              {
+                title: "Cardamom Supreme",
+                description: "The queen of spices",
+                image: "/4.png",
+                count: "4 Products",
+                color: "from-green-500 to-emerald-600"
+              },
+              {
+                title: "Saffron Gold",
+                description: "The world's most precious spice",
+                image: "/5.png",
+                count: "3 Products",
+                color: "from-purple-500 to-indigo-600"
+              },
+              {
+                title: "Specialty Blends",
+                description: "Custom spice combinations",
+                image: "/ren.png",
+                count: "15 Products",
+                color: "from-blue-500 to-cyan-600"
+              }
+            ].map((category, index) => (
+              <motion.div
+                key={category.title}
+                className="group relative overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500"
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+                viewport={{ once: true }}
+                whileHover={{ 
+                  scale: 1.05,
+                  y: -10,
+                  transition: { duration: 0.3 }
+                }}
+              >
+                <div className="relative h-64">
+                  <Image
+                    src={category.image}
+                    alt={category.title}
+                    fill
+                    className="object-cover group-hover:scale-110 transition-transform duration-500"
+                  />
+                  <div className={`absolute inset-0 bg-gradient-to-t ${category.color} opacity-80`} />
+                  <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-all duration-300" />
+                  
+                  <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
+                    <h3 className="text-xl font-bold mb-2">{category.title}</h3>
+                    <p className="text-sm mb-3 opacity-90">{category.description}</p>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm font-medium">{category.count}</span>
+                      <motion.div
+                        whileHover={{ scale: 1.1, x: 5 }}
+                        whileTap={{ scale: 0.9 }}
+                        className="w-8 h-8 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center"
+                      >
+                        <ArrowRight className="w-4 h-4" />
+                      </motion.div>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
+      </section>
+
+      {/* New: Call to Action Section */}
+      <section className="py-20 bg-gradient-to-r from-green-600 to-emerald-700 text-white">
+        <motion.div 
+          className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ duration: 0.8 }}
+          viewport={{ once: true }}
+        >
+          <motion.h2 
+            className="text-4xl md:text-5xl font-bold mb-6"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+          >
+            Ready to Transform Your Culinary Experience?
+          </motion.h2>
+          
+          <motion.p 
+            className="text-xl text-green-100 mb-8"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            viewport={{ once: true }}
+          >
+            Join thousands of satisfied customers who trust Emmy Spices for their premium spice needs.
+          </motion.p>
+          
+          <motion.div 
+            className="flex flex-col sm:flex-row gap-4 justify-center"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+            viewport={{ once: true }}
+          >
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <Link 
+                href="/client"
+                className="inline-flex items-center space-x-2 px-8 py-4 bg-white text-green-600 font-semibold rounded-xl hover:bg-gray-100 transition-all duration-300 shadow-lg"
+              >
+                <ShoppingCart className="w-5 h-5" />
+                <span>Start Shopping</span>
+                <ArrowRight className="w-5 h-5" />
+              </Link>
+            </motion.div>
+            
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <Link 
+                href="/distributor"
+                className="inline-flex items-center space-x-2 px-8 py-4 border-2 border-white text-white font-semibold rounded-xl hover:bg-white hover:text-green-600 transition-all duration-300"
+              >
+                <Package className="w-5 h-5" />
+                <span>Become a Distributor</span>
+              </Link>
+            </motion.div>
+          </motion.div>
+        </motion.div>
+      </section>
+
+      {/* Newsletter Signup Section */}
+      <section className="py-20 bg-gradient-to-br from-gray-50 to-green-50">
+        <motion.div 
+          className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ duration: 0.8 }}
+          viewport={{ once: true }}
+        >
+          <motion.div
+            className="bg-white rounded-3xl shadow-2xl p-8 md:p-12"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+          >
+            <motion.div
+              className="w-20 h-20 bg-gradient-to-r from-green-500 to-emerald-600 rounded-full flex items-center justify-center mx-auto mb-6"
+              whileHover={{ scale: 1.1, rotate: 5 }}
+              transition={{ duration: 0.3 }}
+            >
+              <Mail className="w-10 h-10 text-white" />
+            </motion.div>
+            
+            <motion.h2 
+              className="text-3xl md:text-4xl font-bold text-gray-900 mb-4"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              viewport={{ once: true }}
+            >
+              Stay Spiced Up!
+            </motion.h2>
+            
+            <motion.p 
+              className="text-lg text-gray-600 mb-8"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              viewport={{ once: true }}
+            >
+              Get exclusive access to new spice releases, cooking tips, and special offers delivered to your inbox.
+            </motion.p>
+            
+            <motion.div 
+              className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              viewport={{ once: true }}
+            >
+              <input
+                type="email"
+                placeholder="Enter your email address"
+                className="flex-1 px-6 py-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent text-lg"
+              />
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="px-8 py-4 bg-gradient-to-r from-green-600 to-emerald-600 text-white font-semibold rounded-xl hover:from-green-700 hover:to-emerald-700 transition-all duration-300 shadow-lg hover:shadow-xl"
+              >
+                Subscribe
+              </motion.button>
+            </motion.div>
+            
+            <motion.p 
+              className="text-sm text-gray-500 mt-4"
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              transition={{ duration: 0.6, delay: 0.5 }}
+              viewport={{ once: true }}
+            >
+              🔒 We respect your privacy. Unsubscribe at any time.
+            </motion.p>
+          </motion.div>
+        </motion.div>
+      </section>
+
+      {/* Footer */}
+      <Footer />
+
+      {/* Enhanced Floating Action Buttons */}
+      <motion.div
+        className="fixed bottom-8 right-8 z-50 flex flex-col space-y-4"
+        initial={{ opacity: 0, scale: 0 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.5, delay: 2 }}
+      >
+        {/* Scroll to top button */}
+        <motion.button
+          whileHover={{ scale: 1.1, rotate: 5 }}
+          whileTap={{ scale: 0.9 }}
+          className="w-16 h-16 bg-gradient-to-r from-green-600 to-emerald-600 rounded-full shadow-2xl flex items-center justify-center text-white hover:shadow-green-500/50 transition-all duration-300 animate-float"
+          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+        >
+          <motion.div
+            animate={{ y: [0, -2, 0] }}
+            transition={{ duration: 1, repeat: Infinity }}
+          >
+            ↑
+          </motion.div>
+        </motion.button>
+        
+        {/* Quick shop button */}
+        <motion.button
+          whileHover={{ scale: 1.1, rotate: 5 }}
+          whileTap={{ scale: 0.9 }}
+          className="w-16 h-16 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full shadow-2xl flex items-center justify-center text-white hover:shadow-purple-500/50 transition-all duration-300 animate-float"
+          onClick={() => window.location.href = '/client'}
+        >
+          <motion.div
+            animate={{ scale: [1, 1.1, 1] }}
+            transition={{ duration: 1, repeat: Infinity }}
+          >
+            <ShoppingCart className="w-6 h-6" />
+          </motion.div>
+        </motion.button>
+        
+        {/* WhatsApp support button */}
+        <motion.button
+          whileHover={{ scale: 1.1, rotate: 5 }}
+          whileTap={{ scale: 0.9 }}
+          className="w-16 h-16 bg-gradient-to-r from-green-500 to-green-600 rounded-full shadow-2xl flex items-center justify-center text-white hover:shadow-green-500/50 transition-all duration-300 animate-float"
+          onClick={() => {
+            const message = `Hello! I'm interested in Emmy Spices. Can you help me?`;
+            const whatsappUrl = `https://wa.me/250123456789?text=${encodeURIComponent(message)}`;
+            window.open(whatsappUrl, '_blank');
+          }}
+        >
+          <motion.div
+            animate={{ scale: [1, 1.1, 1] }}
+            transition={{ duration: 1, repeat: Infinity, delay: 0.5 }}
+          >
+            💬
+          </motion.div>
+        </motion.button>
+      </motion.div>
+
+      {/* Chatbot Component */}
+      <Chatbot />
     </div>
   );
 }

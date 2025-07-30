@@ -1,10 +1,32 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ShoppingCart, Heart, Star, ArrowLeft, Plus, Minus, X, CreditCard } from "lucide-react";
+import { 
+  ShoppingCart, 
+  X, 
+  Plus, 
+  Minus, 
+  ArrowLeft, 
+  CreditCard, 
+  User, 
+  Phone, 
+  MapPin, 
+  MessageCircle,
+  MessageSquare,
+  Sparkles,
+  BarChart3,
+  Target,
+  Zap,
+  Star,
+  TrendingUp,
+  Heart,
+  Filter,
+  Search
+} from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
+import Chatbot from "../components/Chatbot";
 
 interface Product {
   id: string;
@@ -17,11 +39,20 @@ interface Product {
   inStock: boolean;
 }
 
+interface CustomerInfo {
+  name: string;
+  email: string;
+  phone: string;
+  address: string;
+  city: string;
+  postalCode: string;
+}
+
 const products: Product[] = [
   {
     id: "1",
     name: "Premium Black Pepper",
-    description: "High-quality black pepper from Rwanda",
+    description: "High-quality black pepper sourced from the finest farms in Rwanda",
     price: 15000,
     image: "/1.png",
     rating: 4.8,
@@ -70,50 +101,20 @@ const products: Product[] = [
   }
 ];
 
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1,
-      delayChildren: 0.2
-    }
-  }
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 30 },
-  visible: {
-    opacity: 1,
-    y: 0
-  }
-};
-
-const imageVariants = {
-  hidden: { 
-    opacity: 0, 
-    scale: 0.5, 
-    rotateY: -90,
-    filter: "blur(10px)"
-  },
-  visible: {
-    opacity: 1,
-    scale: 1,
-    rotateY: 0,
-    filter: "blur(0px)"
-  },
-  hover: {
-    scale: 1.05,
-    rotateY: 5
-  }
-};
-
 export default function ClientPortal() {
   const [cart, setCart] = useState<Record<string, number>>({});
   const [showCart, setShowCart] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [favorites, setFavorites] = useState<Set<string>>(new Set());
-
+  const [showCheckout, setShowCheckout] = useState(false);
+  const [customerInfo, setCustomerInfo] = useState<CustomerInfo>({
+    name: "",
+    email: "",
+    phone: "",
+    address: "",
+    city: "",
+    postalCode: ""
+  });
+  const [showLiveChat, setShowLiveChat] = useState(false);
 
   const addToCart = (productId: string) => {
     setCart(prev => ({
@@ -154,70 +155,55 @@ export default function ClientPortal() {
     }, 0);
   };
 
-  const toggleFavorite = (productId: string) => {
-    setFavorites(prev => {
-      const newFavorites = new Set(prev);
-      if (newFavorites.has(productId)) {
-        newFavorites.delete(productId);
-      } else {
-        newFavorites.add(productId);
-      }
-      return newFavorites;
-    });
-  };
-
   const handleCheckout = async () => {
+    if (!customerInfo.name || !customerInfo.phone || !customerInfo.address) {
+      alert("Please fill in all required fields: Name, Phone, and Address");
+      return;
+    }
+    
     setIsProcessing(true);
-    // Simulate payment processing
     await new Promise(resolve => setTimeout(resolve, 2000));
     setIsProcessing(false);
-    // Here you would integrate with Flutterwave
+    
     alert("Payment processed successfully! Order placed.");
     setCart({});
     setShowCart(false);
+    setShowCheckout(false);
+    setCustomerInfo({
+      name: "",
+      email: "",
+      phone: "",
+      address: "",
+      city: "",
+      postalCode: ""
+    });
   };
 
-  const isValidOrder = getTotalItems() >= 3; // Minimum 3 items
+  const openWhatsApp = () => {
+    const message = `Hello! I'm interested in ordering spices from Emmy Spices. Can you help me?`;
+    const whatsappUrl = `https://wa.me/250123456789?text=${encodeURIComponent(message)}`;
+    window.open(whatsappUrl, '_blank');
+  };
+
+  const isValidOrder = getTotalItems() >= 3;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100">
-      {/* Enhanced Header */}
+      {/* Header */}
       <motion.header 
         initial={{ opacity: 0, y: -50 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, ease: "easeOut" }}
         className="bg-white/80 backdrop-blur-md border-b border-green-200"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-6">
-            <motion.div 
-              initial={{ opacity: 0, x: -30 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="flex items-center space-x-4"
-            >
-              <motion.div
-                whileHover={{ scale: 1.05, x: -5 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <Link href="/" className="flex items-center space-x-2 text-green-600 hover:text-green-700">
-                  <ArrowLeft className="w-5 h-5" />
-                  <span>Back to Home</span>
-                </Link>
-              </motion.div>
-            </motion.div>
+            <Link href="/" className="flex items-center space-x-2 text-green-600 hover:text-green-700">
+              <ArrowLeft className="w-5 h-5" />
+              <span>Back to Home</span>
+            </Link>
             
-            <motion.div 
-              className="flex items-center space-x-4"
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-            >
-              <motion.div 
-                className="w-16 h-16 bg-green-600 rounded-full flex items-center justify-center"
-                whileHover={{ scale: 1.1 }}
-                transition={{ duration: 0.2 }}
-              >
+            <div className="flex items-center space-x-4">
+              <div className="w-16 h-16 bg-green-600 rounded-full flex items-center justify-center">
                 <Image
                   src="/logo.png"
                   alt="Emmy Spices Logo"
@@ -225,198 +211,102 @@ export default function ClientPortal() {
                   height={56}
                   className="rounded-full"
                 />
-              </motion.div>
+              </div>
               <h1 className="text-3xl font-bold text-gray-900">Emmy Spices</h1>
-            </motion.div>
+            </div>
             
-            <motion.div 
-              initial={{ opacity: 0, x: 30 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              className="flex items-center space-x-6"
-            >
+            <div className="flex items-center space-x-6">
               <div className="flex items-center space-x-2">
                 <motion.div
-                  whileHover={{ rotate: 5, scale: 1.1 }}
-                  transition={{ duration: 0.2 }}
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                  className="relative"
                 >
-                  <ShoppingCart className="w-6 h-6 text-green-600" />
-                </motion.div>
-                <h1 className="text-2xl font-bold text-gray-900">Client Portal</h1>
-              </div>
-              
-              <motion.button
-                onClick={() => setShowCart(true)}
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-                className="relative p-2 rounded-full bg-green-100 hover:bg-green-200 transition-colors"
-              >
-                <ShoppingCart className="w-6 h-6 text-green-600" />
-                {getTotalItems() > 0 && (
-                  <motion.div
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center"
+                  <button
+                    onClick={() => setShowCart(true)}
+                    className="p-3 bg-green-600 text-white rounded-full hover:bg-green-700 transition-colors shadow-lg"
                   >
-                    {getTotalItems()}
-                  </motion.div>
-                )}
-              </motion.button>
-            </motion.div>
+                    <ShoppingCart className="w-6 h-6" />
+                  </button>
+                  {getTotalItems() > 0 && (
+                    <motion.div
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-bold"
+                    >
+                      {getTotalItems()}
+                    </motion.div>
+                  )}
+                </motion.div>
+                <span className="text-sm text-gray-600">
+                  {getTotalItems()} items • {getTotalPrice().toLocaleString()} RWF
+                </span>
+              </div>
+            </div>
           </div>
         </div>
       </motion.header>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      {/* Main Content */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.4 }}
-          className="mb-8"
+          className="text-center mb-12"
         >
-          <motion.h2 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.5 }}
-            className="text-3xl font-bold text-gray-900 mb-4"
-          >
-            Emmy Premium Spices
-          </motion.h2>
-          <motion.p 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.6 }}
-            className="text-gray-600"
-          >
-            Discover our collection of premium spices from Emmy Spices. 
-            Minimum order: 3 items for a complete experience.
-          </motion.p>
+          <h2 className="text-4xl font-bold text-gray-900 mb-4">Premium Spices Collection</h2>
+          <p className="text-xl text-gray-600">Discover the finest spices from Rwanda and around the world</p>
         </motion.div>
-        
-        <motion.div 
-          className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-        >
-          {products.map((product, index) => (
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {products.map((product) => (
             <motion.div
               key={product.id}
-              variants={itemVariants}
-              whileHover={{ 
-                scale: 1.03,
-                y: -5,
-                transition: { duration: 0.2 }
-              }}
-              className="bg-white rounded-2xl shadow-lg p-6 hover:shadow-xl transition-all duration-300"
+              whileHover={{ y: -5 }}
+              className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden"
             >
-              <div className="flex items-center justify-between mb-4">
-                <motion.div 
-                  className="relative w-full h-48"
-                  whileHover={{ scale: 1.05 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <motion.div
-                    variants={imageVariants}
-                    initial="hidden"
-                    animate="visible"
-                    whileHover="hover"
-                    className="relative w-full h-full"
-                    style={{ transformStyle: "preserve-3d" }}
-                  >
-                    <Image
-                      src={product.image}
-                      alt={product.name}
-                      fill
-                      className="object-contain"
-                      style={{ 
-                        transform: "translateZ(0)",
-                        backfaceVisibility: "hidden"
-                      }}
-                    />
-                    {/* Glow effect */}
-                    <motion.div
-                      className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent"
-                      initial={{ opacity: 0, x: -100 }}
-                      animate={{ opacity: 1, x: 100 }}
-                      transition={{
-                        duration: 2,
-                        repeat: Infinity,
-                        ease: "linear",
-                        delay: 0
-                      }}
-                    />
-                  </motion.div>
-                </motion.div>
+              <div className="relative h-48 bg-gradient-to-br from-green-50 to-emerald-50">
+                <Image
+                  src={product.image}
+                  alt={product.name}
+                  fill
+                  className="object-contain p-4"
+                />
+              </div>
+              
+              <div className="p-6">
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">{product.name}</h3>
+                <p className="text-gray-600 mb-4">{product.description}</p>
+                
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center space-x-1">
+                    <span className="text-yellow-400">⭐</span>
+                    <span className="text-sm text-gray-600">{product.rating}</span>
+                    <span className="text-sm text-gray-500">({product.reviews})</span>
+                  </div>
+                  <span className="text-2xl font-bold text-green-600">{product.price.toLocaleString()} RWF</span>
+                </div>
+                
                 <motion.button
-                  onClick={() => toggleFavorite(product.id)}
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
-                  className={`absolute top-2 right-2 p-2 rounded-full transition-colors ${
-                    favorites.has(product.id)
-                      ? "bg-red-100 text-red-500"
-                      : "bg-gray-100 text-gray-400 hover:text-red-500"
+                  onClick={() => addToCart(product.id)}
+                  disabled={!product.inStock}
+                  whileHover={product.inStock ? { scale: 1.02 } : {}}
+                  whileTap={product.inStock ? { scale: 0.98 } : {}}
+                  className={`w-full py-3 px-4 rounded-xl font-semibold transition-all duration-300 ${
+                    product.inStock
+                      ? "bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white shadow-lg hover:shadow-xl"
+                      : "bg-gray-300 text-gray-500 cursor-not-allowed"
                   }`}
                 >
-                  <Heart className={`w-5 h-5 ${favorites.has(product.id) ? "fill-current" : ""}`} />
+                  Add to Cart
                 </motion.button>
               </div>
-              
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">{product.name}</h3>
-              <p className="text-gray-600 text-sm mb-4">{product.description}</p>
-              
-              <div className="flex items-center space-x-2 mb-4">
-                <div className="flex items-center">
-                  {[...Array(5)].map((_, i) => (
-                    <Star
-                      key={i}
-                      className={`w-4 h-4 ${
-                        i < Math.floor(product.rating)
-                          ? "text-yellow-400 fill-current"
-                          : "text-gray-300"
-                      }`}
-                    />
-                  ))}
-                </div>
-                <span className="text-sm text-gray-500">({product.reviews})</span>
-              </div>
-              
-              <div className="flex items-center justify-between mb-4">
-                                  <motion.span 
-                    className="text-2xl font-bold text-green-600"
-                    whileHover={{ scale: 1.1 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    {product.price.toLocaleString()} RWF
-                  </motion.span>
-                <span className={`text-sm px-2 py-1 rounded-full ${
-                  product.inStock 
-                    ? "bg-green-100 text-green-700" 
-                    : "bg-red-100 text-red-700"
-                }`}>
-                  {product.inStock ? "In Stock" : "Out of Stock"}
-                </span>
-              </div>
-              
-              <motion.button
-                onClick={() => addToCart(product.id)}
-                disabled={!product.inStock}
-                whileHover={product.inStock ? { scale: 1.02 } : {}}
-                whileTap={product.inStock ? { scale: 0.98 } : {}}
-                className={`w-full py-3 px-4 rounded-xl font-semibold transition-all duration-300 ${
-                  product.inStock
-                    ? "bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white shadow-lg hover:shadow-xl"
-                    : "bg-gray-300 text-gray-500 cursor-not-allowed"
-                }`}
-              >
-                Add to Cart
-              </motion.button>
             </motion.div>
           ))}
-        </motion.div>
+        </div>
       </div>
 
-      {/* Enhanced Shopping Cart Sidebar */}
+      {/* Shopping Cart Sidebar */}
       <AnimatePresence>
         {showCart && (
           <>
@@ -436,12 +326,7 @@ export default function ClientPortal() {
               className="fixed right-0 top-0 h-full w-full max-w-md bg-white shadow-2xl z-50"
             >
               <div className="flex flex-col h-full">
-                <motion.div 
-                  className="flex items-center justify-between p-6 border-b border-gray-200"
-                  initial={{ opacity: 0, y: -20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5 }}
-                >
+                <div className="flex items-center justify-between p-6 border-b border-gray-200">
                   <h3 className="text-xl font-semibold text-gray-900">Shopping Cart</h3>
                   <motion.button
                     onClick={() => setShowCart(false)}
@@ -451,50 +336,33 @@ export default function ClientPortal() {
                   >
                     <X className="w-5 h-5 text-gray-500" />
                   </motion.button>
-                </motion.div>
+                </div>
                 
                 <div className="flex-1 overflow-y-auto p-6">
                   {getTotalItems() === 0 ? (
-                    <motion.div 
-                      className="text-center py-12"
-                      initial={{ opacity: 0, scale: 0.8 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ duration: 0.5 }}
-                    >
+                    <div className="text-center py-12">
                       <ShoppingCart className="w-16 h-16 text-gray-300 mx-auto mb-4" />
                       <p className="text-gray-500">Your cart is empty</p>
-                    </motion.div>
+                    </div>
                   ) : (
-                    <motion.div 
-                      className="space-y-4"
-                      variants={containerVariants}
-                      initial="hidden"
-                      animate="visible"
-                    >
-                      {Object.entries(cart).map(([productId, quantity], index) => {
+                    <div className="space-y-4">
+                      {Object.entries(cart).map(([productId, quantity]) => {
                         const product = products.find(p => p.id === productId);
                         if (!product) return null;
                         
                         return (
-                          <motion.div
+                          <div
                             key={productId}
-                            variants={itemVariants}
-                            initial={{ opacity: 0, x: 20 }}
-                            animate={{ opacity: 1, x: 0 }}
                             className="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg"
                           >
-                            <motion.div 
-                              className="relative w-12 h-12"
-                              whileHover={{ scale: 1.1 }}
-                              transition={{ duration: 0.2 }}
-                            >
+                            <div className="relative w-12 h-12">
                               <Image
                                 src={product.image}
                                 alt={product.name}
                                 fill
                                 className="object-contain"
                               />
-                            </motion.div>
+                            </div>
                             <div className="flex-1">
                               <h4 className="font-semibold text-gray-900">{product.name}</h4>
                               <p className="text-sm text-gray-500">{product.price.toLocaleString()} RWF</p>
@@ -508,15 +376,9 @@ export default function ClientPortal() {
                               >
                                 <Minus className="w-3 h-3 text-gray-600" />
                               </motion.button>
-                              <motion.span 
-                                className="w-8 text-center font-semibold"
-                                key={quantity}
-                                initial={{ scale: 1.2 }}
-                                animate={{ scale: 1 }}
-                                transition={{ duration: 0.2 }}
-                              >
+                              <span className="w-8 text-center font-semibold">
                                 {quantity}
-                              </motion.span>
+                              </span>
                               <motion.button
                                 onClick={() => addToCart(product.id)}
                                 whileHover={{ scale: 1.1 }}
@@ -534,42 +396,33 @@ export default function ClientPortal() {
                                 <X className="w-4 h-4" />
                               </motion.button>
                             </div>
-                          </motion.div>
+                          </div>
                         );
                       })}
-                    </motion.div>
+                    </div>
                   )}
                 </div>
                 
                 {getTotalItems() > 0 && (
-                  <motion.div 
-                    className="border-t border-gray-200 p-6"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5 }}
-                  >
+                  <div className="border-t border-gray-200 p-6">
                     <div className="flex items-center justify-between mb-4">
                       <span className="text-lg font-semibold text-gray-900">Total:</span>
                       <span className="text-2xl font-bold text-green-600">{getTotalPrice().toLocaleString()} RWF</span>
                     </div>
                     
-                    <AnimatePresence>
-                      {!isValidOrder && (
-                        <motion.div
-                          initial={{ opacity: 0, y: 20 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: -20 }}
-                          className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4"
-                        >
-                          <p className="text-yellow-800 text-sm">
-                            ⚠️ Minimum order requirement: 3 items
-                          </p>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
+                    {!isValidOrder && (
+                      <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
+                        <p className="text-yellow-800 text-sm">
+                          ⚠️ Minimum order requirement: 3 items
+                        </p>
+                      </div>
+                    )}
                     
                     <motion.button
-                      onClick={handleCheckout}
+                      onClick={() => {
+                        setShowCheckout(true);
+                        setShowCart(false);
+                      }}
                       disabled={!isValidOrder || isProcessing}
                       whileHover={isValidOrder && !isProcessing ? { scale: 1.02 } : {}}
                       whileTap={isValidOrder && !isProcessing ? { scale: 0.98 } : {}}
@@ -579,29 +432,217 @@ export default function ClientPortal() {
                           : "bg-gray-300 cursor-not-allowed"
                       }`}
                     >
-                      {isProcessing ? (
-                        <>
-                          <motion.div
-                            animate={{ rotate: 360 }}
-                            transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                            className="w-5 h-5 border-2 border-white border-t-transparent rounded-full"
-                          />
-                          <span>Processing...</span>
-                        </>
-                      ) : (
-                        <>
-                          <CreditCard className="w-5 h-5" />
-                          <span>Pay with Flutterwave</span>
-                        </>
-                      )}
+                      <CreditCard className="w-5 h-5" />
+                      <span>Proceed to Checkout</span>
                     </motion.button>
-                  </motion.div>
+                  </div>
                 )}
               </div>
             </motion.div>
           </>
         )}
       </AnimatePresence>
+
+      {/* Checkout Form */}
+      <AnimatePresence>
+        {showCheckout && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black/50 z-40"
+              onClick={() => setShowCheckout(false)}
+            />
+            
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              className="fixed inset-4 z-50 bg-white rounded-2xl shadow-2xl overflow-hidden"
+            >
+              <div className="flex flex-col h-full">
+                <div className="flex items-center justify-between p-6 border-b border-gray-200">
+                  <h3 className="text-2xl font-bold text-gray-900">Checkout</h3>
+                  <motion.button
+                    onClick={() => setShowCheckout(false)}
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                    className="p-2 rounded-full hover:bg-gray-100 transition-colors"
+                  >
+                    <X className="w-6 h-6 text-gray-500" />
+                  </motion.button>
+                </div>
+                
+                <div className="flex-1 overflow-y-auto p-6">
+                  <div className="grid md:grid-cols-2 gap-8">
+                    {/* Customer Information */}
+                    <div>
+                      <h4 className="text-lg font-semibold text-gray-900 mb-6 flex items-center">
+                        <User className="w-5 h-5 mr-2" />
+                        Customer Information
+                      </h4>
+                      
+                      <div className="space-y-4">
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Full Name *
+                          </label>
+                          <input
+                            type="text"
+                            value={customerInfo.name}
+                            onChange={(e) => setCustomerInfo(prev => ({ ...prev, name: e.target.value }))}
+                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                            placeholder="Enter your full name"
+                            required
+                          />
+                        </div>
+                        
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Email
+                          </label>
+                          <input
+                            type="email"
+                            value={customerInfo.email}
+                            onChange={(e) => setCustomerInfo(prev => ({ ...prev, email: e.target.value }))}
+                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                            placeholder="Enter your email"
+                          />
+                        </div>
+                        
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Phone Number *
+                          </label>
+                          <input
+                            type="tel"
+                            value={customerInfo.phone}
+                            onChange={(e) => setCustomerInfo(prev => ({ ...prev, phone: e.target.value }))}
+                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                            placeholder="Enter your phone number"
+                            required
+                          />
+                        </div>
+                        
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Address *
+                          </label>
+                          <textarea
+                            value={customerInfo.address}
+                            onChange={(e) => setCustomerInfo(prev => ({ ...prev, address: e.target.value }))}
+                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                            placeholder="Enter your full address"
+                            rows={3}
+                            required
+                          />
+                        </div>
+                        
+                        <div className="grid grid-cols-2 gap-4">
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                              City
+                            </label>
+                            <input
+                              type="text"
+                              value={customerInfo.city}
+                              onChange={(e) => setCustomerInfo(prev => ({ ...prev, city: e.target.value }))}
+                              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                              placeholder="City"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                              Postal Code
+                            </label>
+                            <input
+                              type="text"
+                              value={customerInfo.postalCode}
+                              onChange={(e) => setCustomerInfo(prev => ({ ...prev, postalCode: e.target.value }))}
+                              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                              placeholder="Postal Code"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Order Summary */}
+                    <div>
+                      <h4 className="text-lg font-semibold text-gray-900 mb-6 flex items-center">
+                        <ShoppingCart className="w-5 h-5 mr-2" />
+                        Order Summary
+                      </h4>
+                      
+                      <div className="bg-gray-50 rounded-lg p-6">
+                        <div className="space-y-4">
+                          {Object.entries(cart).map(([productId, quantity]) => {
+                            const product = products.find(p => p.id === productId);
+                            if (!product) return null;
+                            
+                            return (
+                              <div key={productId} className="flex justify-between items-center">
+                                <div>
+                                  <p className="font-medium text-gray-900">{product.name}</p>
+                                  <p className="text-sm text-gray-600">Qty: {quantity}</p>
+                                </div>
+                                <p className="font-semibold text-gray-900">
+                                  {(product.price * quantity).toLocaleString()} RWF
+                                </p>
+                              </div>
+                            );
+                          })}
+                        </div>
+                        
+                        <div className="border-t border-gray-200 mt-6 pt-6">
+                          <div className="flex justify-between items-center text-lg font-bold text-gray-900">
+                            <span>Total:</span>
+                            <span>{getTotalPrice().toLocaleString()} RWF</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="border-t border-gray-200 p-6">
+                  <motion.button
+                    onClick={handleCheckout}
+                    disabled={isProcessing || !customerInfo.name || !customerInfo.phone || !customerInfo.address}
+                    whileHover={!isProcessing ? { scale: 1.02 } : {}}
+                    whileTap={!isProcessing ? { scale: 0.98 } : {}}
+                    className={`w-full py-4 px-6 rounded-xl font-semibold text-white transition-all duration-300 flex items-center justify-center space-x-2 ${
+                      !isProcessing && customerInfo.name && customerInfo.phone && customerInfo.address
+                        ? "bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 shadow-lg hover:shadow-xl"
+                        : "bg-gray-300 cursor-not-allowed"
+                    }`}
+                  >
+                    {isProcessing ? (
+                      <>
+                        <motion.div
+                          animate={{ rotate: 360 }}
+                          transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                          className="w-5 h-5 border-2 border-white border-t-transparent rounded-full"
+                        />
+                        <span>Processing...</span>
+                      </>
+                    ) : (
+                      <>
+                        <CreditCard className="w-5 h-5" />
+                        <span>Pay with Flutterwave</span>
+                      </>
+                    )}
+                  </motion.button>
+                </div>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+
+      {/* Chatbot Component */}
+      <Chatbot />
     </div>
   );
 } 

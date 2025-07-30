@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ShoppingCart, Package, ArrowLeft, Plus, Minus, X, Truck } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
+import Chatbot from "../components/Chatbot";
 
 interface Product {
   id: string;
@@ -588,6 +589,9 @@ export default function DistributorPortal() {
           </>
         )}
       </AnimatePresence>
+      
+      {/* Chatbot Component */}
+      <Chatbot />
     </div>
   );
 } 

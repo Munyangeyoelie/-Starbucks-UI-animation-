@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { ArrowLeft, Globe, Truck, CheckCircle, Package, Send } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
+import Chatbot from "../components/Chatbot";
 
 interface ShippingForm {
   firstName: string;
@@ -395,6 +396,9 @@ export default function InternationalShipping() {
           </motion.form>
         )}
       </div>
+      
+      {/* Chatbot Component */}
+      <Chatbot />
     </div>
   );
 } 
